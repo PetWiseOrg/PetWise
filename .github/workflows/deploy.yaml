@@ -1,0 +1,91 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+        - non-existent-branch
+    #   - main
+    #   - staging
+
+jobs:
+  build_flutter:
+    name: Build Flutter App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.3"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Tests
+        run: flutter test
+
+      - name: Build Android Release
+        run: flutter build apk --release
+
+      - name: Build iOS Release
+        run: flutter build ios --release --no-codesign # no-codesign is a valid Flutter build option
+
+      - name: Upload Flutter Android Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: flutter_android_build
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload Flutter iOS Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: flutter_ios_build
+          path: build/ios/ipa
+
+  deploy_pocketbase: # pocketbase is the name of the service being deployed
+    name: Deploy PocketBase
+    runs-on: ubuntu-latest
+    needs: build_flutter
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.4 # webfactory is a valid GitHub username
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Sync PocketBase Files
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            SERVER="${{ secrets.PRODUCTION_SERVER }}"
+            DEPLOY_PATH="/home/maksim/pocketbase/" # maksim is the username and pocketbase is the directory
+            ENVIRONMENT="production"
+              else
+            SERVER="${{ secrets.STAGING_SERVER }}"
+            DEPLOY_PATH="/home/maksim/pocketbase/"
+            ENVIRONMENT="staging"
+          fi
+
+          ssh maksim@${SERVER} << EOF # maksim is the username
+            sudo systemctl stop pocketbase # pocketbase is the service name
+          EOF
+
+          echo "Deploying to $SERVER"
+
+          # Sync files using rsync
+          rsync -avz --delete  --exclude='pocketbase.exe' --exclude='pocketbase' --exclude='pb_data' ./pocketbase/ maksim@$SERVER:$DEPLOY_PATH # maksim is the username and pocketbase is the directory
+
+      - name: Apply Migrations and Restart Service
+        run: |
+          ssh maksim@${SERVER} << EOF
+            sudo systemctl stop pocketbase
+            cd /home/maksim/pocketbase/
+            ./pocketbase migrate
+            sudo systemctl restart pocketbase
+          EOF

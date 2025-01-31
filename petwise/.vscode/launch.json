@@ -1,0 +1,54 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Local with pocketbase (iOS)",
+            "type": "dart",
+            "flutterMode": "debug",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "preLaunchTask": "Setup Local Environment",
+            "postDebugTask": "Stop pocketbase",
+            "toolArgs": [
+                "--dart-define-from-file=.env.tmp"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run Local with pocketbase (Android)",
+            "type": "dart",
+            "flutterMode": "debug",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "preLaunchTask": "Setup Local Environment",
+            "postDebugTask": "Stop pocketbase",
+            "toolArgs": [
+                "--dart-define-from-file=.env.tmp"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run Staging",
+            "type": "dart",
+            "flutterMode": "release",
+            "request": "launch",
+            "preLaunchTask": "Flutter Pub Get",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define=URL=https://stagingelusiv.infiniplay.games/"
+            ]
+        },
+        {
+            "name": "Run Production",
+            "type": "dart",
+            "flutterMode": "release",
+            "request": "launch",
+            "preLaunchTask": "Flutter Pub Get",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define=URL=https://elusiv.infiniplay.games/"
+            ]
+        }
+    ],
+    "compounds": []
+}
