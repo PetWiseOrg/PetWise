@@ -35,7 +35,7 @@
             "label": "Start cloudflared tunnel",
             "type": "shell",
             "windows": {
-                "command": "\"C:\\Program Files\\Cloudflare\\cloudflared.exe\" tunnel --url http://127.0.0.1:8090 2>&1 | Tee-Object -FilePath C:\\temp\\cloudflared.log"
+                "command": "cloudflared tunnel --url http://127.0.0.1:8090 2>&1 | Tee-Object -FilePath C:\\temp\\cloudflared.log"
             },
             "linux": {
                 "command": "cloudflared tunnel --url http://127.0.0.1:8090 2>&1 | tee /tmp/cloudflared.log"

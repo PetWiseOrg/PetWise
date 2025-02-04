@@ -1,13 +1,15 @@
 import re
-import json
 import os
 import time
 
+# Determine log file path based on operating system
+log_file = r"C:\temp\cloudflared.log" if os.name == "nt" else "/tmp/cloudflared.log"
+
 try:
     time.sleep(2)  # Give cloudflared time to start
-    with open('/tmp/cloudflared.log', 'r') as f:
+    with open(log_file, 'r') as f:
         content = f.read()
-        match = re.search('https://.*?\\.trycloudflare\\.com', content)
+        match = re.search(r'https://.*?\.trycloudflare\.com', content)
         url = match.group(0) if match else ''
 
     # Create or update .env.tmp file with the URL
