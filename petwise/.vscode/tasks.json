@@ -34,7 +34,15 @@
         {
             "label": "Start cloudflared tunnel",
             "type": "shell",
-            "command": "cloudflared tunnel --url http://127.0.0.1:8090 2>&1 | tee /tmp/cloudflared.log",
+            "windows": {
+                "command": "$env:Path += ';C:\\Program Files\\Cloudflare'; cloudflared tunnel --url http://127.0.0.1:8090 2>&1 | Tee-Object -FilePath C:\\temp\\cloudflared.log"
+            },
+            "linux": {
+                "command": "cloudflared tunnel --url http://127.0.0.1:8090 2>&1 | tee /tmp/cloudflared.log"
+            },
+            "osx": {
+                "command": "cloudflared tunnel --url http://127.0.0.1:8090 2>&1 | tee /tmp/cloudflared.log"
+            },
             "isBackground": true,
             "presentation": {
                 "reveal": "always",
@@ -56,7 +64,15 @@
         {
             "label": "Update launch.json with tunnel URL",
             "type": "shell",
-            "command": "which python3 >/dev/null 2>&1 && python3 ${workspaceFolder}/scripts/update_url.py || python ${workspaceFolder}/scripts/update_url.py",
+            "windows": {
+                "command": "if (Get-Command python3 -ErrorAction SilentlyContinue) { python3 ${workspaceFolder}/scripts/update_url.py } else { python ${workspaceFolder}/scripts/update_url.py }"
+            },
+            "linux": {
+                "command": "which python3 >/dev/null 2>&1 && python3 ${workspaceFolder}/scripts/update_url.py || python ${workspaceFolder}/scripts/update_url.py"
+            },
+            "osx": {
+                "command": "which python3 >/dev/null 2>&1 && python3 ${workspaceFolder}/scripts/update_url.py || python ${workspaceFolder}/scripts/update_url.py"
+            },
             "dependsOn": "Start cloudflared tunnel",
             "dependsOrder": "sequence",
             "presentation": {
