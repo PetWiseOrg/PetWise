@@ -21,7 +21,7 @@
             "label": "Install/Update cloudflared",
             "type": "shell",
             "windows": {
-                "command": "if (winget list Cloudflare.cloudflared -s winget | Select-String 'Cloudflare') { winget upgrade Cloudflare.cloudflared --accept-source-agreements --accept-package-agreements; if($LASTEXITCODE -eq 1){ exit 0 } } else { winget install Cloudflare.cloudflared --accept-source-agreements --accept-package-agreements }"
+                "command": "if (winget list Cloudflare.cloudflared -s winget | Select-String 'Cloudflare') { winget upgrade Cloudflare.cloudflared --accept-source-agreements --accept-package-agreements } else { winget install Cloudflare.cloudflared --accept-source-agreements --accept-package-agreements }; exit 0"
             },
             "linux": {
                 "command": "sudo apt-get update && sudo apt-get install -y cloudflared"
