@@ -20,7 +20,15 @@
         {
             "label": "Install/Update cloudflared",
             "type": "shell",
-            "command": "if ($env:OS -eq 'Windows_NT') { winget install Cloudflare.cloudflared } else { if (uname -s | grep -q 'Darwin'); then brew install cloudflared; else sudo apt-get update && sudo apt-get install -y cloudflared; fi }",
+            "windows": {
+                "command": "winget install Cloudflare.cloudflared"
+            },
+            "linux": {
+                "command": "sudo apt-get update && sudo apt-get install -y cloudflared"
+            },
+            "osx": {
+                "command": "brew install cloudflared"
+            },
             "problemMatcher": []
         },
         {
