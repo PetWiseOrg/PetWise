@@ -35,7 +35,7 @@
             "label": "Start cloudflared tunnel",
             "type": "shell",
             "windows": {
-                "command": "$env:Path += ';C:\\Program Files\\Cloudflare'; cloudflared tunnel --url http://127.0.0.1:8090 2>&1 | Tee-Object -FilePath C:\\temp\\cloudflared.log"
+                "command": "\"C:\\Program Files\\Cloudflare\\cloudflared.exe\" tunnel --url http://127.0.0.1:8090 2>&1 | Tee-Object -FilePath C:\\temp\\cloudflared.log"
             },
             "linux": {
                 "command": "cloudflared tunnel --url http://127.0.0.1:8090 2>&1 | tee /tmp/cloudflared.log"
@@ -65,7 +65,7 @@
             "label": "Update launch.json with tunnel URL",
             "type": "shell",
             "windows": {
-                "command": "if (Get-Command python3 -ErrorAction SilentlyContinue) { python3 ${workspaceFolder}/scripts/update_url.py } else { python ${workspaceFolder}/scripts/update_url.py }"
+                "command": "if (Get-Command python3 -ErrorAction SilentlyContinue) { python3 ${workspaceFolder}/scripts/update_url.py } elseif (Get-Command python -ErrorAction SilentlyContinue) { python ${workspaceFolder}/scripts/update_url.py } else { Write-Host 'No Python installed, skipping tunnel URL update'; exit 0 }"
             },
             "linux": {
                 "command": "which python3 >/dev/null 2>&1 && python3 ${workspaceFolder}/scripts/update_url.py || python ${workspaceFolder}/scripts/update_url.py"
