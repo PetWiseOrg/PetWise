@@ -23,7 +23,7 @@ enum AppRoute {
 }
 
 final router = GoRouter(
-  initialLocation: '/welcome',
+  initialLocation: '/vet_dashboard',
   routes: [
     GoRoute(
       path: '/welcome',

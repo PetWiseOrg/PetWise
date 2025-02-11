@@ -85,10 +85,10 @@ final clickableStyleSmall = textStyleSmall.copyWith(
 );
 
 ThemeData petwiseTheme = ThemeData(
-    brightness: Brightness.dark,
-    primaryColor: primary,
-    scaffoldBackgroundColor: background,
-    appBarTheme: const AppBarTheme(color: primary, elevation: 4),
+    brightness: Brightness.light,
+    primaryColor: const Color.fromARGB(255, 255, 255, 255),
+    scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
+    appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 255, 255, 255), elevation: 4),
     iconTheme: const IconThemeData(
       color: iconColor,
     ),
