@@ -10,9 +10,11 @@ try:
     with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
         content = f.read()
         # Remove BOM if present
-        content = content.lstrip('\ufeff').strip()
-        # Use improved regex to capture the URL with non-whitespace characters
-        match = re.search(r'https://\S+?\.trycloudflare\.com', content)
+        content = content.lstrip('\ufeff')
+        # Remove any non-ASCII chars
+        content = ''.join(ch for ch in content if ord(ch) < 128).strip()
+        # Use a stricter pattern that allows letters, digits, and dashes
+        match = re.search(r'https://[a-z0-9-]+\.trycloudflare\.com', content, re.IGNORECASE)
         url = match.group(0) if match else ''
 
     # Create or update .env.tmp file with the URL
