@@ -6,9 +6,8 @@ import time
 log_file = r"C:\temp\cloudflared.log" if os.name == "nt" else "/tmp/cloudflared.log"
 
 def extract_url(content):
-    content = content.lstrip('\ufeff')
-    content = ''.join(ch for ch in content if ord(ch) < 128).strip()
-    match = re.search(r'https://[a-z0-9-]+\.trycloudflare\.com', content, re.IGNORECASE)
+    content = content.lstrip('\ufeff').strip()
+    match = re.search(r'https://\S+?\.trycloudflare\.com', content, re.IGNORECASE)
     return match.group(0) if match else None
 
 url = None
