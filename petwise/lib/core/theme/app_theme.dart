@@ -88,11 +88,11 @@ ThemeData petwiseTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: const Color.fromARGB(255, 255, 255, 255),
     scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
-    appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 255, 255, 255), elevation: 4),
+    appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 255, 255, 255)),
     iconTheme: const IconThemeData(
       color: iconColor,
     ),
     iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-      iconColor: WidgetStateProperty.all<Color>(offWhite),
+      iconColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 255, 255, 255)),
     )));

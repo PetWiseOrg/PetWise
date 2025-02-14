@@ -17,6 +17,11 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
     });
   }
 
+  void _onViewAllTapped() {
+    // Handle the "View All" tap here
+    print('View All tapped');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +36,11 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
               children: [
                 Text(
                   'Hello,',
-                  style: TextStyle(fontSize: 25, color: Colors.black54),
+                  style: TextStyle(fontSize: 25, color: Colors.black),
                 ),
                 Text(
-                  'John Doe',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+                  'John Smith', //TODO Replace with the user's name
+                  style: TextStyle(fontSize: 25, color: Colors.black),
                 ),
               ],
             ),
@@ -43,15 +48,15 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
             Spacer(), // Push the profile picture to the right
             CircleAvatar(
               radius: 40, // Increase the size of the profile picture
-              backgroundImage: AssetImage('assets/profile.jpg'), // Replace with a network image if needed
+              backgroundImage: AssetImage('assets/profile.jpg'), //TODO replace with the user's profile picture
             ),
           ],
         ),
       ),
-      body: const Column(
+      body: Column(
         children: [
-          SizedBox(height: 20), // Space from the top
-          Padding(
+          const SizedBox(height: 20), // Space from the top
+          const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Align(
               alignment: Alignment.centerLeft,
@@ -60,7 +65,7 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
                 children: [
                   Text(
                     'Upcoming Appointments',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                   SizedBox(height: 5), // Space between text and line
                   Divider(
@@ -69,6 +74,25 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
                     indent: 10, // Start padding
                     endIndent: 10, // End padding
                   ),
+                ],
+              ),
+            ),
+          ),
+          const Spacer(), // Push the grey box to the bottom
+          GestureDetector(
+            onTap: _onViewAllTapped,
+            child: Container(
+              color: Colors.grey[300],
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 14), // Increase the height
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), // Add margin to float above bottom bar and not touch sides
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'View All',
+                    style: TextStyle(fontSize: 22, color: Colors.black),
+                  ),
+                  Icon(Icons.arrow_forward, color: Colors.black),
                 ],
               ),
             ),
