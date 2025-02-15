@@ -1,46 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:petwise/core/theme/app_theme.dart';
 import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_class.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key, required this.petOwner});
+class PetOwnerDashboardPage extends StatelessWidget {
+  const PetOwnerDashboardPage({super.key, required this.petOwner});
 
   final PetOwner petOwner;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text('Dashboard', style: TextStyle(color: Colors.white)),
-      ),
+      backgroundColor: secondary,
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: secondary,
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 50,),
               ProfileHeader(petOwner: petOwner,),
               const SectionTitle(title: 'Upcoming Appointments'),
               const Divider(),
               
-              const SizedBox(height: 10),
+              const SizedBox(height: 100),
 
               const SectionTitle(title: 'My Pets'),
+              const Divider(),
               const SizedBox(height: 10),
               PetsList(pets: petOwner.pets),
-              const Divider(),
-              
+
+              const SizedBox(height: 10,),
               const SectionTitle(title: 'Previous Appointments & Treatment Plans'),
               const Divider(),
+
+              const SizedBox(height: 100,),
               
               const SectionTitle(title: 'Recent Chats'),
               const Divider(),
+
+              const SizedBox(height: 100,),
             ],
           ),
         ),
@@ -92,7 +94,7 @@ class PetsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80, // Ensures proper height for horizontal scrolling
+      height: 100,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(

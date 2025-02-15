@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:petwise/core/theme/app_theme.dart';
 import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_class.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key, required this.petOwner});
+class PetOwnerProfilePage extends StatelessWidget {
+  const PetOwnerProfilePage({super.key, required this.petOwner});
 
   final PetOwner petOwner;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: primary,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -21,7 +22,7 @@ class ProfilePage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          ProfileHeader(petOwner: petOwner,),
+          ProfileHeader(petOwner: petOwner),
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -29,20 +30,15 @@ class ProfilePage extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Pets:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: petOwner.pets.length,
-                      itemBuilder: (context, index) {
-                        return PetCard(pet: petOwner.pets[index]);
-                      },
-                    ),
-                  ),
-                  AddPetButton(),
-                ],
+              child: ListView.builder(
+                itemCount: petOwner.pets.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < petOwner.pets.length) {
+                    return PetCard(pet: petOwner.pets[index]);
+                  } else {
+                    return const AddPetButton();
+                  }
+                },
               ),
             ),
           ),
@@ -64,7 +60,7 @@ class ProfileHeader extends StatelessWidget {
 
       child: Column(
         children: [
-          CircleAvatar(radius: 40, backgroundColor: Colors.purple[100], child: Icon(Icons.person, size: 40, color: Colors.purple)),
+          CircleAvatar(radius: 40, backgroundColor: Colors.purple[100], child: const Icon(Icons.person, size: 40, color: Colors.purple)),
           const SizedBox(height: 10),
 
           Text(petOwner.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -89,22 +85,21 @@ class PetCard extends StatelessWidget {
     return Card(
       color: Colors.grey[300],
       child: ExpansionTile(
-        leading: CircleAvatar(backgroundColor: Colors.grey),
-        title: Text(pet.name!),
+        leading: CircleAvatar(radius: 30, backgroundColor: Colors.purple[100], child: const Icon(Icons.pets, size: 30, color: Colors.purple)),
+        title: Text(pet.name, style: TextStyle(color: softBlack)),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Age: ${pet.age}"),
-                Text("Weight: ${pet.weight}"),
+                Text("Age: ${pet.age}", style: TextStyle(color: softBlack)),
+                Text("Weight: ${pet.weight}", style: TextStyle(color: softBlack)),
                 
                 const SizedBox(height: 8),
                 
-                
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                  style: ElevatedButton.styleFrom(backgroundColor: primary),
                   onPressed: () {
                     Navigator.push(
                       context,

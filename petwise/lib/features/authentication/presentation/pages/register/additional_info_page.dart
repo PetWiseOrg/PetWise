@@ -7,11 +7,9 @@ import 'package:petwise/core/theme/app_theme.dart';
 import 'package:petwise/features/authentication/presentation/widgets/login_register_button.dart';
 import 'package:petwise/features/authentication/domain/auth_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 
 class AdditionalInfoPage extends StatefulWidget {
   const AdditionalInfoPage({super.key});
