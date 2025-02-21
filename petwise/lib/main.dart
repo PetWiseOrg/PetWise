@@ -1,6 +1,7 @@
 import 'package:petwise/core/navigation/routing.dart';
 import 'package:petwise/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,6 +68,9 @@ Future<void> main() async {
           create: (context) => AuthProvider(
             Provider.of<UserRepository>(context, listen: false),
           ),
+        ),
+        ChangeNotifierProvider<PetOwnerProvider>(
+          create: (_) => PetOwnerProvider(),
         ),
       ],
       child: const PetWise(),

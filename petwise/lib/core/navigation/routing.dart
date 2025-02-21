@@ -7,6 +7,10 @@ import 'package:petwise/features/authentication/presentation/pages/login/login_p
 import 'package:petwise/features/authentication/presentation/pages/register/registration_page.dart';
 import 'package:petwise/features/authentication/presentation/pages/welcome_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petwise/features/pet_owner/dashboard/presentation/pages/pet_owner_dashboard_page.dart';
+import 'package:petwise/features/pet_owner/pet/presentation/pages/edit_pet_page.dart';
+import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
+import 'package:petwise/features/pet_owner/profile/presentation/pages/pet_owner_profile_page.dart';
 
 enum AppRoute {
   welcomePage,
@@ -17,16 +21,19 @@ enum AppRoute {
   forgotPassword,
   passwordReset,
   verifyEmail,
-  additionalInfo
+  additionalInfo,
+  petOwnerDashboardPage,
+  petOwnerProfilePage,
+  editPetPage,
 }
 
 final router = GoRouter(
-  initialLocation: '/welcome',
+  initialLocation: '/petOwnerDashboardPage',
   routes: [
     GoRoute(
       path: '/welcome',
       name: AppRoute.welcomePage.name,
-      builder: (context, state) => const WelcomePage(),
+      builder: (context, state) => WelcomePage(),
     ),
     GoRoute(
       path: '/login',
@@ -67,6 +74,24 @@ final router = GoRouter(
       path: '/',
       name: AppRoute.homePage.name,
       builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: '/petOwnerDashboardPage',
+      name: AppRoute.petOwnerDashboardPage.name,
+      builder: (context, state) => const PetOwnerDashboardPage(),
+    ),
+    GoRoute(
+      path: '/petOwnerProfilePage',
+      name: AppRoute.petOwnerProfilePage.name,
+      builder: (context, state) => const PetOwnerProfilePage(),
+    ),
+    GoRoute(
+      path: '/editPetPage',
+      name: AppRoute.editPetPage.name,
+      builder: (context, state) {
+        final pet = state.extra as Pet;
+        return EditPetPage(pet: pet,);
+      },
     ),
   ],
 );
