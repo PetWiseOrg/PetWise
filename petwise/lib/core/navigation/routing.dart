@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:petwise/features/authentication/presentation/pages/login/forgot_password_page.dart';
 import 'package:petwise/features/authentication/presentation/pages/login/password_reset_page.dart';
 import 'package:petwise/features/authentication/presentation/pages/register/additional_info_page.dart';
@@ -8,7 +9,8 @@ import 'package:petwise/features/authentication/presentation/pages/register/regi
 import 'package:petwise/features/authentication/presentation/pages/welcome_page.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_dashboard.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_clinic_page.dart';
-import 'package:petwise/features/vet/presentation/pages/vet_notifications.dart';
+import 'package:petwise/features/vet/presentation/pages/vet_notification_page.dart';
+import 'package:petwise/features/vet/presentation/pages/vet_bottom_bar.dart';
 import 'package:go_router/go_router.dart';
 
 enum AppRoute {
@@ -29,6 +31,7 @@ enum AppRoute {
 final router = GoRouter(
   initialLocation: '/vet_dashboard',
   routes: [
+    // Non-vet routes...
     GoRoute(
       path: '/welcome',
       name: AppRoute.welcomePage.name,
@@ -78,10 +81,28 @@ final router = GoRouter(
       path: '/vet_dashboard',
       name: AppRoute.vetDashboardPage.name,
       builder: (context, state) => const VetDashboardPage(),
+      pageBuilder: (context, state) => _noTransitionPage(const VetDashboardPage()),
     ),
-    GoRoute(path: '/vet_clinic_page',
-    name: AppRoute.vetClinicPage.name,
-    builder: (context, state) => const VetClinicPage(),
-),
+    GoRoute(
+      path: '/vet_clinic_page',
+      name: AppRoute.vetClinicPage.name,
+      builder: (context, state) => const VetClinicPage(),
+      pageBuilder: (context, state) => _noTransitionPage(const VetClinicPage()),
+    ),
+    GoRoute(
+      path: '/vet_notification_page',
+      name: AppRoute.vetNotificationPage.name,
+      builder: (context, state) => const VetNotificationPage(),
+      pageBuilder: (context, state) => _noTransitionPage(const VetNotificationPage()),
+    ),
+
   ],
 );
+
+
+
+Page _noTransitionPage(Widget child) {
+  return MaterialPage(
+    child: child,
+  );
+}
