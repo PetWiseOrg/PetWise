@@ -7,6 +7,8 @@ import 'package:petwise/features/authentication/presentation/pages/login/login_p
 import 'package:petwise/features/authentication/presentation/pages/register/registration_page.dart';
 import 'package:petwise/features/authentication/presentation/pages/welcome_page.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_dashboard.dart';
+import 'package:petwise/features/vet/presentation/pages/vet_clinic_page.dart';
+import 'package:petwise/features/vet/presentation/pages/vet_notifications.dart';
 import 'package:go_router/go_router.dart';
 
 enum AppRoute {
@@ -20,6 +22,8 @@ enum AppRoute {
   verifyEmail,
   additionalInfo,
   vetDashboardPage,
+  vetClinicPage,
+  vetNotificationPage,
 }
 
 final router = GoRouter(
@@ -75,5 +79,9 @@ final router = GoRouter(
       name: AppRoute.vetDashboardPage.name,
       builder: (context, state) => const VetDashboardPage(),
     ),
+    GoRoute(path: '/vet_clinic_page',
+    name: AppRoute.vetClinicPage.name,
+    builder: (context, state) => const VetClinicPage(),
+),
   ],
 );
