@@ -2,6 +2,7 @@ import 'package:petwise/features/authentication/presentation/pages/login/forgot_
 import 'package:petwise/features/authentication/presentation/pages/login/password_reset_page.dart';
 import 'package:petwise/features/authentication/presentation/pages/register/additional_info_page.dart';
 import 'package:petwise/features/authentication/presentation/pages/register/verify_email_page.dart';
+import 'package:petwise/features/calendar/calendar.dart';
 import 'package:petwise/features/home/presentation/pages/home_page.dart';
 import 'package:petwise/features/authentication/presentation/pages/login/login_page.dart';
 import 'package:petwise/features/authentication/presentation/pages/register/registration_page.dart';
@@ -17,12 +18,18 @@ enum AppRoute {
   forgotPassword,
   passwordReset,
   verifyEmail,
-  additionalInfo
+  additionalInfo,
+  calendar
 }
 
 final router = GoRouter(
-  initialLocation: '/welcome',
+  initialLocation: '/calendar',
   routes: [
+    GoRoute(
+      path: '/calendar',
+      name: AppRoute.calendar.name,
+      builder: (context, state) => const Calendar(),
+    ),
     GoRoute(
       path: '/welcome',
       name: AppRoute.welcomePage.name,

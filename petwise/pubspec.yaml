@@ -45,6 +45,7 @@ dependencies:
   confetti: ^0.8.0
   image_picker: ^1.1.2
   http: ^1.2.2
+  calendar_view: ^1.4.0
 
 dev_dependencies:
   flutter_test:
