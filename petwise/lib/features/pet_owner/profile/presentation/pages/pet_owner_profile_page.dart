@@ -72,7 +72,12 @@ class ProfileHeader extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          IconButton(icon: const Icon(Icons.edit, color: Colors.white), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.white),
+            onPressed: () {
+              context.pushNamed(AppRoute.editOwnerPage.name);
+            },
+          ),
         ],
       ),
     );

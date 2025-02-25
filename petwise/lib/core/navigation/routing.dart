@@ -8,6 +8,7 @@ import 'package:petwise/features/authentication/presentation/pages/register/regi
 import 'package:petwise/features/authentication/presentation/pages/welcome_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petwise/features/pet_owner/dashboard/presentation/pages/pet_owner_dashboard_page.dart';
+import 'package:petwise/features/pet_owner/pet/presentation/pages/edit_owner_page.dart';
 import 'package:petwise/features/pet_owner/pet/presentation/pages/edit_pet_page.dart';
 import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
 import 'package:petwise/features/pet_owner/profile/presentation/pages/pet_owner_profile_page.dart';
@@ -25,6 +26,7 @@ enum AppRoute {
   petOwnerDashboardPage,
   petOwnerProfilePage,
   editPetPage,
+  editOwnerPage,
 }
 
 final router = GoRouter(
@@ -92,6 +94,11 @@ final router = GoRouter(
         final pet = state.extra as Pet;
         return EditPetPage(pet: pet,);
       },
+    ),
+    GoRoute(
+      path: '/editOwnerPage',
+      name: AppRoute.editOwnerPage.name,
+      builder: (context, state) => EditOwnerPage(),
     ),
   ],
 );

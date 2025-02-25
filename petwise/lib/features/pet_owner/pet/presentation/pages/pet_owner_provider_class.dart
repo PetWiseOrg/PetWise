@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PetOwnerProvider extends ChangeNotifier {
   PetOwner _petOwner = PetOwner(name: "John Doe", address: "123 Pet Street", pets: []);
@@ -22,19 +23,21 @@ class PetOwnerProvider extends ChangeNotifier {
 }
 
 class Pet {
+  XFile? profileImage; // Add this variable
   String name;
   int age;
   double weight;
   String species;
   String breed;
 
-  Pet({required this.name, required this.age, required this.weight, required this.species, required this.breed});
+  Pet({this.profileImage, required this.name, required this.age, required this.weight, required this.species, required this.breed});
 }
 
 class PetOwner {
+  XFile? profileImage; // Add this variable
   String name;
   String address;
   List<Pet> pets;
 
-  PetOwner({required this.name, required this.address, required this.pets});
+  PetOwner({this.profileImage, required this.name, required this.address, required this.pets});
 }
