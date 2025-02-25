@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:petwise/features/vet/presentation/pages/vet_bottom_bar.dart';
+import 'package:petwise/features/vet/presentation/widgets/vet_bottom_bar_widget.dart';
 
 class VetDashboardPage extends StatefulWidget {
   const VetDashboardPage({super.key});
@@ -17,6 +17,7 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
     });
   }
 
+  //TODO this can probably be removed 
   void _onViewAllTapped() {
     // Handle the "View All" tap here
     print('View All tapped');
@@ -26,13 +27,13 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 150, // Increase the height of the AppBar
+        toolbarHeight: 150, 
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center, // Center text vertically
+              mainAxisAlignment: MainAxisAlignment.center, 
               children: [
                 Text(
                   'Hello,',
@@ -44,10 +45,10 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
                 ),
               ],
             ),
-            SizedBox(width: 15), // Space between text and profile picture
-            Spacer(), // Push the profile picture to the right
+            SizedBox(width: 15), 
+            Spacer(), 
             CircleAvatar(
-              radius: 40, // Increase the size of the profile picture
+              radius: 40,
               backgroundImage: AssetImage('assets/profile.jpg'), //TODO replace with the user's profile picture
             ),
           ],
@@ -55,7 +56,7 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 20), // Space from the top
+          const SizedBox(height: 20), 
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Align(
@@ -70,9 +71,9 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
                   SizedBox(height: 5), // Space between text and line
                   Divider(
                     color: Color.fromARGB(255, 217, 217, 217), // Faint line color
-                    thickness: 1, // Line thickness
-                    indent: 10, // Start padding
-                    endIndent: 10, // End padding
+                    thickness: 1, 
+                    indent: 10,
+                    endIndent: 10, 
                   ),
                 ],
               ),
@@ -83,8 +84,8 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
             onTap: _onViewAllTapped,
             child: Container(
               color: Colors.grey[300],
-              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 14), // Increase the height
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), // Add margin to float above bottom bar and not touch sides
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 14), 
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), 
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

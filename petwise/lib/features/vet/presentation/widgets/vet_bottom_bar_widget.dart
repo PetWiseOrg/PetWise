@@ -50,8 +50,8 @@ class VetBottomBar extends StatelessWidget {
     context.goNamed(AppRoute.vetDashboardPage.name);
   }
 
-  void goToNotificationPage(BuildContext context) {
-    context.goNamed(AppRoute.vetNotificationPage.name);
+  void goToCalendarPage(BuildContext context) {
+    context.goNamed(AppRoute.vetCalendarPage.name);
   }
 
   Widget _buildBottomBarItem({
@@ -69,9 +69,8 @@ class VetBottomBar extends StatelessWidget {
         } else if (index == 1) {
           goToClinicPage(context);
         } else if (index == 2) {
-          goToNotificationPage(context);
+          goToCalendarPage(context);
         }
-        // Optionally update selected index state in parent
         onItemTapped(index);
       },
       child: Padding(
@@ -83,7 +82,7 @@ class VetBottomBar extends StatelessWidget {
               decoration: isSelected
                   ? BoxDecoration(
                       color: const Color.fromARGB(255, 204, 194, 220),
-                      borderRadius: BorderRadius.circular(30), // More oval shape
+                      borderRadius: BorderRadius.circular(30), 
                     )
                   : null,
               child: Icon(icon, color: Colors.black),

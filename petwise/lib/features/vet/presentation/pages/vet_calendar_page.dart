@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:petwise/features/vet/presentation/pages/vet_bottom_bar.dart';
+import 'package:petwise/features/vet/presentation/widgets/vet_bottom_bar_widget.dart';
 
-class VetNotificationPage extends StatefulWidget {
-  const VetNotificationPage({super.key});
+class VetCalendarPage extends StatefulWidget {
+  const VetCalendarPage({super.key});
 
   @override
-  VetNotificationPageState createState() => VetNotificationPageState();
+  VetCalendarPageState createState() => VetCalendarPageState();
 }
 
-class VetNotificationPageState extends State<VetNotificationPage> {
+class VetCalendarPageState extends State<VetCalendarPage> {
   int _selectedIndex = 2;
 
   void _onItemTapped(int index) {

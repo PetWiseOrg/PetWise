@@ -9,8 +9,8 @@ import 'package:petwise/features/authentication/presentation/pages/register/regi
 import 'package:petwise/features/authentication/presentation/pages/welcome_page.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_dashboard.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_clinic_page.dart';
-import 'package:petwise/features/vet/presentation/pages/vet_notification_page.dart';
-import 'package:petwise/features/vet/presentation/pages/vet_bottom_bar.dart';
+import 'package:petwise/features/vet/presentation/pages/vet_calendar_page.dart';
+import 'package:petwise/features/vet/presentation/pages/add_new_staff_page.dart';
 import 'package:go_router/go_router.dart';
 
 enum AppRoute {
@@ -25,7 +25,8 @@ enum AppRoute {
   additionalInfo,
   vetDashboardPage,
   vetClinicPage,
-  vetNotificationPage,
+  vetCalendarPage,
+  addNewStaffPage,
 }
 
 final router = GoRouter(
@@ -90,17 +91,22 @@ final router = GoRouter(
       pageBuilder: (context, state) => _noTransitionPage(const VetClinicPage()),
     ),
     GoRoute(
-      path: '/vet_notification_page',
-      name: AppRoute.vetNotificationPage.name,
-      builder: (context, state) => const VetNotificationPage(),
-      pageBuilder: (context, state) => _noTransitionPage(const VetNotificationPage()),
+      path: '/vet_calendar_page',
+      name: AppRoute.vetCalendarPage.name,
+      builder: (context, state) => const VetCalendarPage(),
+      pageBuilder: (context, state) => _noTransitionPage(const VetCalendarPage()),
+    ),
+    GoRoute(
+    path: '/add_new_staff_page',
+    name: AppRoute.addNewStaffPage.name,
+    builder: (context, state) => const AddNewStaffPage(),
     ),
 
   ],
 );
 
 
-
+//Ensures that there is no animation when navigating to a new page
 Page _noTransitionPage(Widget child) {
   return MaterialPage(
     child: child,
