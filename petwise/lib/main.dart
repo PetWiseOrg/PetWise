@@ -10,28 +10,7 @@ import 'package:petwise/data/repositories/user_repo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await dotenv.load(); // Remove this line
 
-  // Determine the environment and load the corresponding .env file
-  // String env =
-  //     const String.fromEnvironment('FLAVOR', defaultValue: 'local_android');
-  // String apiURl;
-  // switch (env) {
-  //   case 'staging':
-  //     apiURl = 'https://stagingelusiv.infiniplay.games/';
-  //     break;
-  //   case 'prod':
-  //     apiURl = 'https://elusiv.infiniplay.games/';
-  //     break;
-  //   case 'local_ios':
-  //     apiURl = 'http://127.0.0.1:8090'; 
-  //     break;
-  //   case 'local_android':
-  //   default:
-  //     apiURl =
-  //         'http://10.0.2.2:8090'; 
-  //     break;
-  // }
   String apiURl = const String.fromEnvironment('URL', defaultValue: 'http://10.0.2.2:8090');
 
   // create authstore to store credentials and retrieve stored credentials
