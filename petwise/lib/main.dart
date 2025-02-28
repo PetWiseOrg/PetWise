@@ -1,11 +1,11 @@
-import 'package:petwise/core/navigation/routing.dart';
-import 'package:petwise/core/theme/app_theme.dart';
+import 'package:petwise/navigation/routing.dart';
+import 'package:petwise/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:petwise/features/authentication/domain/auth_provider.dart';
-import 'package:petwise/features/authentication/repositories/user_repo.dart';
+import 'package:petwise/data/providers/user_provider.dart';
+import 'package:petwise/data/repositories/user_repo.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart'; // Remove this import
 
 Future<void> main() async {
