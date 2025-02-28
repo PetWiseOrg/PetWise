@@ -118,7 +118,7 @@ class VetClinicPageState extends State<VetClinicPage> {
 
 
 AlertDialog showAlert(BuildContext context) {
-  int code = Random().nextInt(999999);
+  int code = Random().nextInt(899999) + 100000;
   return AlertDialog(
     content: Column(
       mainAxisSize: MainAxisSize.min,
