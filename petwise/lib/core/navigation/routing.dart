@@ -10,7 +10,6 @@ import 'package:petwise/features/authentication/presentation/pages/welcome_page.
 import 'package:petwise/features/vet/presentation/pages/vet_dashboard.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_clinic_page.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_calendar_page.dart';
-import 'package:petwise/features/vet/presentation/pages/add_new_staff_page.dart';
 import 'package:go_router/go_router.dart';
 
 enum AppRoute {
@@ -96,11 +95,7 @@ final router = GoRouter(
       builder: (context, state) => const VetCalendarPage(),
       pageBuilder: (context, state) => _noTransitionPage(const VetCalendarPage()),
     ),
-    GoRoute(
-    path: '/add_new_staff_page',
-    name: AppRoute.addNewStaffPage.name,
-    builder: (context, state) => const AddNewStaffPage(),
-    ),
+
 
   ],
 );

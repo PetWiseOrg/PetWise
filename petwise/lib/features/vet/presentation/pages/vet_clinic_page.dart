@@ -89,7 +89,6 @@ class VetClinicPageState extends State<VetClinicPage> {
                       return showAlert(context);
                     },
                   );                    
-                  print('Add Staff');
 
                 },
                 icon: const Icon(Icons.add, color: Colors.black,),
