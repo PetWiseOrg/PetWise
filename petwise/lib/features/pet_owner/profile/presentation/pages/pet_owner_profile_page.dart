@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:petwise/core/navigation/routing.dart';
 import 'package:petwise/core/theme/app_theme.dart';
 import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
@@ -14,7 +15,7 @@ class PetOwnerProfilePage extends StatefulWidget {
 
 class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
   void _addNewPet(Pet pet) {
-    context.read<PetOwnerProvider>().addPet(pet); // Update global PetOwner
+    context.read<PetOwnerProvider>().addPet(pet);
   }
 
   @override
@@ -40,8 +41,8 @@ class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
               ),
               child: ListView(
                 children: [
-                  ...petOwner.pets.map((pet) => PetCard(pet: pet)), // Show pet list
-                  AddPetButton(onPetAdded: _addNewPet), // Add new pet
+                  ...petOwner.pets.map((pet) => PetCard(pet: pet)),
+                  AddPetButton(onPetAdded: _addNewPet),
                 ],
               ),
             ),

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +14,7 @@ class EditOwnerPage extends StatefulWidget {
 class _EditOwnerPageState extends State<EditOwnerPage> {
   late TextEditingController _nameController;
   late TextEditingController _addressController;
+  String? profileImage;
 
   @override
   void initState() {
@@ -25,6 +29,16 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
     _nameController.dispose();
     _addressController.dispose();
     super.dispose();
+  }
+
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        profileImage = image.path;
+      });
+    }
   }
 
   void _saveChanges() {
@@ -56,11 +70,18 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Avatar Placeholder
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: Colors.purple[100],
-              child: const Icon(Icons.person, size: 50, color: Colors.purple),
+            GestureDetector(
+              onTap: pickImage,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: profileImage != null && profileImage!.isNotEmpty
+                    ? FileImage(File(profileImage!))
+                    : null,
+                backgroundColor: Colors.purple[100],
+                child: profileImage == null || profileImage!.isEmpty
+                    ? const Icon(Icons.person, size: 50, color: Colors.purple)
+                    : null,
+              ),
             ),
             const SizedBox(height: 20),
 

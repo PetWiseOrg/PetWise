@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +21,7 @@ class _EditPetPageState extends State<EditPetPage> {
   late TextEditingController _weightController;
   late String _selectedSpecies;
   late String _selectedBreed;
+  String? petImage;
 
   final List<String> speciesOptions = ['Dog', 'Cat', 'Bird', 'Other'];
   final Map<String, List<String>> breedOptions = {
@@ -43,6 +47,16 @@ class _EditPetPageState extends State<EditPetPage> {
     _ageController.dispose();
     _weightController.dispose();
     super.dispose();
+  }
+
+  Future<void> pickPetImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        petImage = image.path;
+      });
+    }
   }
 
   void _saveChanges() {
@@ -85,16 +99,17 @@ class _EditPetPageState extends State<EditPetPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Pet Avatar
-            Container(
-              height: 100,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.purple[100],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Center(
-                child: Icon(Icons.pets, size: 50, color: Colors.purple),
+            GestureDetector(
+              onTap: pickPetImage,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: petImage != null && petImage!.isNotEmpty
+                    ? FileImage(File(petImage!))
+                    : null,
+                backgroundColor: Colors.purple[100],
+                child: petImage == null || petImage!.isEmpty
+                    ? const Icon(Icons.pets, size: 50, color: Colors.purple)
+                    : null,
               ),
             ),
             const SizedBox(height: 20),
