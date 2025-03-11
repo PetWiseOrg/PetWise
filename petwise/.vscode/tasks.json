@@ -29,7 +29,14 @@
             "osx": {
                 "command": "brew install cloudflared"
             },
-            "problemMatcher": []
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            }
         },
         {
             "label": "Start cloudflared tunnel",
@@ -46,7 +53,10 @@
             "isBackground": true,
             "presentation": {
                 "reveal": "always",
-                "panel": "shared"
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
             },
             "problemMatcher": {
                 "owner": "cloudflared",
@@ -58,6 +68,11 @@
                     "activeOnStart": true,
                     "beginsPattern": ".*",
                     "endsPattern": ".*https://.*\\.trycloudflare\\.com.*"
+                }
+            },
+            "options": {
+                "env": {
+                    "FORCE_COLOR": "1"
                 }
             }
         },
@@ -77,7 +92,10 @@
             "dependsOrder": "sequence",
             "presentation": {
                 "reveal": "always",
-                "panel": "shared"
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
             }
         },
         {
@@ -104,7 +122,11 @@
             },
             "presentation": {
                 "reveal": "always",
-                "panel": "dedicated"
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            
             },
             "group": {
                 "kind": "build",
@@ -118,7 +140,10 @@
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
-                "panel": "dedicated"
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
             },
             "group": "none"
         },
@@ -129,7 +154,10 @@
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
-                "panel": "dedicated"
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
             },
             "group": "none"
         }
