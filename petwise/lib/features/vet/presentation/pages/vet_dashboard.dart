@@ -54,10 +54,10 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
           ],
         ),
       ),
-      body: Column(
+      body: const Column(
         children: [
-          const SizedBox(height: 20), 
-          const Padding(
+           SizedBox(height: 20), 
+           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Align(
               alignment: Alignment.centerLeft,
@@ -79,25 +79,7 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
               ),
             ),
           ),
-          const Spacer(), // Push the grey box to the bottom
-          GestureDetector(
-            onTap: _onViewAllTapped,
-            child: Container(
-              color: Colors.grey[300],
-              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 14), 
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), 
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'View All',
-                    style: TextStyle(fontSize: 22, color: Colors.black),
-                  ),
-                  Icon(Icons.arrow_forward, color: Colors.black),
-                ],
-              ),
-            ),
-          ),
+        
         ],
       ),
       bottomNavigationBar: VetBottomBar(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:petwise/core/navigation/routing.dart';
+import 'package:petwise/navigation/routing.dart';
 import 'package:go_router/go_router.dart';
 
 class VetBottomBar extends StatelessWidget {
