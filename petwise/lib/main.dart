@@ -1,37 +1,16 @@
-import 'package:petwise/core/navigation/routing.dart';
-import 'package:petwise/core/theme/app_theme.dart';
+import 'package:petwise/navigation/routing.dart';
+import 'package:petwise/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:petwise/features/authentication/domain/auth_provider.dart';
-import 'package:petwise/features/authentication/repositories/user_repo.dart';
+import 'package:petwise/data/providers/user_provider.dart';
+import 'package:petwise/data/repositories/user_repo.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart'; // Remove this import
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await dotenv.load(); // Remove this line
 
-  // Determine the environment and load the corresponding .env file
-  // String env =
-  //     const String.fromEnvironment('FLAVOR', defaultValue: 'local_android');
-  // String apiURl;
-  // switch (env) {
-  //   case 'staging':
-  //     apiURl = 'https://stagingelusiv.infiniplay.games/';
-  //     break;
-  //   case 'prod':
-  //     apiURl = 'https://elusiv.infiniplay.games/';
-  //     break;
-  //   case 'local_ios':
-  //     apiURl = 'http://127.0.0.1:8090'; 
-  //     break;
-  //   case 'local_android':
-  //   default:
-  //     apiURl =
-  //         'http://10.0.2.2:8090'; 
-  //     break;
-  // }
   String apiURl = const String.fromEnvironment('URL', defaultValue: 'http://10.0.2.2:8090');
 
   // create authstore to store credentials and retrieve stored credentials
