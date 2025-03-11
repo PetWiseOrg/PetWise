@@ -7,11 +7,11 @@ import 'package:petwise/ui/ui_authentication/pages/login/login_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/register/registration_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/welcome_page.dart';
 import 'package:go_router/go_router.dart';
-import 'package:petwise/features/pet_owner/dashboard/presentation/pages/pet_owner_dashboard_page.dart';
-import 'package:petwise/features/pet_owner/pet/presentation/pages/edit_owner_page.dart';
-import 'package:petwise/features/pet_owner/pet/presentation/pages/edit_pet_page.dart';
-import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
-import 'package:petwise/features/pet_owner/profile/presentation/pages/pet_owner_profile_page.dart';
+import 'package:petwise/ui/pet_owner/dashboard/presentation/pages/pet_owner_dashboard_page.dart';
+import 'package:petwise/ui/pet_owner/pet/presentation/pages/edit_owner_page.dart';
+import 'package:petwise/ui/pet_owner/pet/presentation/pages/edit_pet_page.dart';
+import 'package:petwise/ui/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
+import 'package:petwise/ui/pet_owner/profile/presentation/pages/pet_owner_profile_page.dart';
 
 enum AppRoute {
   welcomePage,
