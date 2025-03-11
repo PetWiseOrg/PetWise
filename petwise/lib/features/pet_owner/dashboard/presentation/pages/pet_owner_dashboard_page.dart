@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:petwise/core/navigation/routing.dart';
-import 'package:petwise/core/theme/app_theme.dart';
+import 'package:petwise/navigation/routing.dart';
+import 'package:petwise/ui/theme/app_theme.dart';
 import 'package:petwise/features/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
 import 'package:provider/provider.dart';
 
