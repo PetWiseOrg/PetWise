@@ -34,7 +34,9 @@ class User {
       lastName: record['lastName'] ?? '',
       phoneNumber: record['phoneNumber'],
       avatar: record['avatar'],
-      lastLogin: record['lastLogin'] != null ? DateTime.parse(record['lastLogin']) : null,
+      lastLogin: record['lastLogin'] != null && record['lastLogin'] != ''
+          ? DateTime.parse(record['lastLogin'])
+          : null,
       verified: record['verified'] ?? false,
     );
   }

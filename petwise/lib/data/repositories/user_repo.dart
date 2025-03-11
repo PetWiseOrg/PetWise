@@ -58,8 +58,8 @@ class UserRepository {
   }
 
   Future<bool> isUserAuthenticated() async {
-    return pb.authStore.isValid;
+    //return pb.authStore.isValid;
     //testing
-    //return false;
+    return false;
   }
 }
