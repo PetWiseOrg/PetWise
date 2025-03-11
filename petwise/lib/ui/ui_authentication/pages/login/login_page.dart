@@ -35,11 +35,45 @@ class LoginPageState extends State<LoginPage> {
       try {
         await authProvider.authenticateUser(
             usernameController.text, passwordController.text);
+        //refresh current user
+        await authProvider.refreshCurrentUser();
+        //check if user is fully created
+        final isFullyCreated = await authProvider.isUserFullyCreated(authProvider.currentUser!.id);
         if (context.mounted) {
-          context.goNamed(AppRoute.homePage.name);
+          if (isFullyCreated) {
+            //redirect to home page
+            context.goNamed(AppRoute.homePage.name);
+          } else {
+            //redirect to additional info page
+            context.goNamed(AppRoute.additionalInfo.name);
+          }
         }
-      } catch (error) {
+      } 
+      catch (error) {
         if (!mounted) return;
+        
+        final Map<String, dynamic> errorData = error is Map ? error : (error as dynamic).response;
+        if (errorData["message"] == "Please verify your account first.") {
+          // If the user is not verified, redirect to the verification page
+          //send verification email (disabled for testing)
+          //await authProvider.sendVerificationEmail(usernameController.text);
+          //redirect to verification page
+          context.goNamed(
+              AppRoute.verifyEmail.name,
+              extra: {'email': usernameController.text, 'password': passwordController.text},
+            );
+        } 
+        else {
+          final isFullyCreated = await authProvider.isUserFullyCreated(authProvider.currentUser!.id);
+          if (isFullyCreated) {
+            context.goNamed(AppRoute.homePage.name);
+          } else {
+            context.goNamed(AppRoute.additionalInfo.name);
+          }
+        }
+        
+
+        
         final errorString = error.toString();
         final start = errorString.indexOf('message:');
         final end = errorString.indexOf(",", start);

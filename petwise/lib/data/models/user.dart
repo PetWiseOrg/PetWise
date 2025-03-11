@@ -9,6 +9,7 @@ class User {
   final String? avatar;
   final DateTime? lastLogin;
   final bool verified;
+  final bool isFullyCreated;
 
   User({
     required this.id,
@@ -21,6 +22,7 @@ class User {
     this.avatar,
     this.lastLogin,
     this.verified = false,
+    this.isFullyCreated = false,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -34,10 +36,9 @@ class User {
       lastName: record['lastName'] ?? '',
       phoneNumber: record['phoneNumber'],
       avatar: record['avatar'],
-      lastLogin: record['lastLogin'] != null && record['lastLogin'] != ''
-          ? DateTime.parse(record['lastLogin'])
-          : null,
+      lastLogin: record['lastLogin'] != null && record['lastLogin'] != '' ? DateTime.parse(record['lastLogin']) : null,
       verified: record['verified'] ?? false,
+      isFullyCreated: record['isFullyCreated'] ?? false,
     );
   }
 
@@ -53,6 +54,7 @@ class User {
       'avatar': avatar,
       'lastLogin': lastLogin?.toIso8601String(),
       'verified': verified,
+      'isFullyCreated': isFullyCreated,
     };
   }
 }

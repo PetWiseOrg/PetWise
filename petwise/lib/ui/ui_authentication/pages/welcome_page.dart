@@ -24,9 +24,32 @@ class WelcomePageState extends State<WelcomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final hasValidCredentials = await checkStoredCredentials();
       if (hasValidCredentials) {
-        if (!mounted) return;
-        context.goNamed(AppRoute.homePage.name);
-      } else {
+        //refresh current user
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        await authProvider.refreshCurrentUser();
+        //check if user is fully created
+        final isFullyCreated = await authProvider.isUserFullyCreated(authProvider.currentUser!.id);
+        if (isFullyCreated) {
+          //redirect to home page
+          setState(() {
+            _isCheckingCredentials = false;
+          });
+          //redirect to home page
+          if (!mounted) return;
+          context.goNamed(AppRoute.homePage.name);
+        } else {
+          //redirect to additional info page
+          setState(() {
+            _isCheckingCredentials = false;
+          });
+          //redirect to additional info page
+          context.goNamed(AppRoute.additionalInfo.name);
+
+          if (!mounted) return;
+          context.goNamed(AppRoute.homePage.name);
+        }
+      } 
+      else {
         setState(() {
           _isCheckingCredentials = false;
         });

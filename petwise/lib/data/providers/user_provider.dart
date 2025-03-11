@@ -33,6 +33,17 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> refreshCurrentUser() async {
+    try {
+      final userJson = await _userRepo.refreshCurrentUser();
+      _currentUser = User.fromJson(userJson);
+      notifyListeners();
+    } catch (e) {
+      print('Error refreshing current user: $e');
+      rethrow;
+    }
+  }
+
   Future<void> updateUserProfile(
       String userId, Map<String, dynamic> userData, XFile profileImage) async {
     try {
@@ -86,6 +97,16 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  //send verification email
+  Future<void> sendVerificationEmail(String email) async {
+    try {
+      await _userRepo.sendVerificationEmail(email);
+    } catch (e) {
+      print('Error sending verification email: $e');
+      rethrow;
+    }
+  }
+
   Future<void> verifyEmail(String token) async {
     try {
       await _userRepo.verifyEmail(token);
@@ -99,6 +120,19 @@ class AuthProvider extends ChangeNotifier {
     try {
       final isValid = await _userRepo.isUserAuthenticated();
       return isValid;
+    } catch (e) {
+      print('Error checking user authentication: $e');
+      return false;
+    }
+  }
+  Future<bool> isUserFullyCreated(String userId) async {
+    try {
+      //refresh current user
+      await refreshCurrentUser();
+      //check if user is fully created
+      final isFullyCreated = _currentUser!.isFullyCreated;
+      return isFullyCreated;
+
     } catch (e) {
       print('Error checking user authentication: $e');
       return false;

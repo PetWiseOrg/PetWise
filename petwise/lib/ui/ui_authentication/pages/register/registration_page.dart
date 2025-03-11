@@ -52,8 +52,11 @@ class RegistrationPageState extends State<RegistrationPage> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     try {
-      await authProvider.createUser(
-          {'email': email, 'password': password, 'passwordConfirm': password});
+      //create user
+      await authProvider.createUser({'email': email, 'password': password, 'passwordConfirm': password});
+      //send verification email (disabled for testing)
+      //await authProvider.sendVerificationEmail(email);
+
       if (context.mounted) {
         context.goNamed(
           AppRoute.verifyEmail.name,
