@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_dashboard.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_clinic_page.dart';
 import 'package:petwise/features/vet/presentation/pages/vet_calendar_page.dart';
+import 'package:petwise/features/vet/presentation/pages/add_new_event_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/welcome_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/forgot_password_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/password_reset_page.dart';
@@ -25,7 +26,7 @@ enum AppRoute {
   vetDashboardPage,
   vetClinicPage,
   vetCalendarPage,
-  addNewStaffPage,
+  addNewEventPage,
 }
 
 final router = GoRouter(
@@ -94,7 +95,13 @@ final router = GoRouter(
       name: AppRoute.vetCalendarPage.name,
       builder: (context, state) => const VetCalendarPage(),
       pageBuilder: (context, state) => _noTransitionPage(const VetCalendarPage()),
-    ),
+      ),
+    GoRoute(
+      path: '/add_new_event_page',
+      name: AppRoute.addNewEventPage.name,
+      builder: (context, state) => const AddNewEventPage(),
+      ),
+
 
 
   ],
