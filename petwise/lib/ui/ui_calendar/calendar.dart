@@ -11,7 +11,8 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  Widget? child;
+  Widget? calendarView;
+  Widget? buttonRow;
 
   @override
   void initState() {
@@ -21,24 +22,44 @@ class _CalendarState extends State<Calendar> {
 
   void dayView(DateTime date) {
     setState(() {
-      child = DayView(
+      calendarView = DayView(
         controller: controller,
-        minDay: DateTime(2025),
-        maxDay: DateTime(2050),
         initialDay: date,
+      );
+      buttonRow = Row(
+        children: [
+          ElevatedButton(
+            onPressed: () => monthView(date),
+            child: const Text('<- Month'),
+          ),
+          ElevatedButton(onPressed: () => weekView(date), child: const Text('Week')),
+        ],
       );
     });
   }
 
-  void weekView() {
+  void weekView(DateTime date) {
     setState(() {
-      child = const WeekView();
+      calendarView = WeekView(
+        controller: controller,
+        initialDay: date,
+        startDay: WeekDays.sunday,
+      );
+      buttonRow = Row(
+        children: [
+          ElevatedButton(
+            onPressed: () => monthView(date),
+            child: const Text('<- Month'),
+          ),
+          ElevatedButton(onPressed: () => dayView(date), child: const Text('Day')),
+        ],
+      );
     });
   }
 
   void monthView(DateTime date) {
     setState(() {
-      child = MonthView(
+      calendarView = MonthView(
         controller: controller,
         // cellBuilder: (
         //   date,
@@ -50,8 +71,6 @@ class _CalendarState extends State<Calendar> {
         //   // Return your widget to display as month cell.
         //   return Container();
         // },
-        minMonth: DateTime(2025),
-        maxMonth: DateTime(2050),
         initialMonth: date,
         cellAspectRatio: 1,
         onPageChange: (date, pageIndex) => print("$date, $pageIndex"),
@@ -67,6 +86,14 @@ class _CalendarState extends State<Calendar> {
         hideDaysNotInMonth: true, // To hide days or cell that are not in current month
         useAvailableVerticalSpace: true,
       );
+      buttonRow = Row(
+        children: [
+          ElevatedButton(
+            onPressed: () => print("Not implemented"),
+            child: const Text('<- Back'),
+          ),
+        ],
+      );
     });
   }
 
@@ -76,7 +103,29 @@ class _CalendarState extends State<Calendar> {
       appBar: AppBar(
         title: const Text('Calendar'),
       ),
-      body: child,
+      body: Column(
+        children: [
+        //   const Text('Debug Buttons:'),
+        //   Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        //     ElevatedButton(
+        //       onPressed: () => monthView(DateTime.now()),
+        //       child: const Text('Month View'),
+        //     ),
+        //     ElevatedButton(
+        //       onPressed: () => weekView(DateTime.now()),
+        //       child: const Text('Week View'),
+        //     ),
+        //     ElevatedButton(
+        //       onPressed: () => dayView(DateTime.now()),
+        //       child: const Text('Day View'),
+        //     ),
+        //   ]),
+          buttonRow!,
+          Expanded(
+            child: calendarView!,
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
