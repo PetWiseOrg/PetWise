@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petwise/data/models/pet.dart';
+import 'package:petwise/data/models/pet_user.dart';
+import 'package:petwise/data/providers/pet_provider.dart';
+import 'package:petwise/data/providers/pet_user_provider.dart';
 import 'package:petwise/navigation/routing.dart';
 import 'package:petwise/ui/theme/app_theme.dart';
-import 'package:petwise/ui/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
 import 'package:provider/provider.dart';
 
 class PetOwnerDashboardPage extends StatelessWidget {
@@ -10,7 +13,9 @@ class PetOwnerDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PetOwner petOwner = context.watch<PetOwnerProvider>().petOwner;
+    final petUserProvider = context.watch<PetUserProvider>();
+
+    final petUser = petUserProvider.currentPetUser;
 
     return Scaffold(
       backgroundColor: secondary,
@@ -25,7 +30,7 @@ class PetOwnerDashboardPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 75,),
-              ProfileHeader(petOwner: petOwner,),
+              ProfileHeader(petUser: petUser,),
               const SizedBox(height: 50),
               const SectionTitle(title: 'Upcoming Appointments'),
               const Divider(),
@@ -56,9 +61,9 @@ class PetOwnerDashboardPage extends StatelessWidget {
 }
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.petOwner});
+  const ProfileHeader({super.key, required this.petUser});
 
-  final PetOwner petOwner;
+  final PetUser? petUser;
   
   @override
   Widget build(BuildContext context) {
@@ -69,12 +74,12 @@ class ProfileHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('Hello,', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text(petOwner.name, style: const TextStyle(fontSize: 22)),
+            Text(petUser!.userId, style: const TextStyle(fontSize: 22)),
           ],
         ),
         GestureDetector(
           onTap: () {
-            context.pushNamed(AppRoute.petOwnerProfilePage.name, extra: petOwner);
+            context.pushNamed(AppRoute.petOwnerProfilePage.name, extra: petUser);
           },
           child: CircleAvatar(
             radius: 40,
@@ -105,7 +110,7 @@ class PetsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final petOwner = context.watch<PetOwnerProvider>().petOwner;
+    final pets = context.watch<PetProvider>().pets;
 
     return SizedBox(
       height: 100,
@@ -113,7 +118,7 @@ class PetsList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            ...petOwner.pets.map((pet) => PetAvatar(pet: pet)),
+            ...pets.map((pet) => PetAvatar(pet: pet)),
             AddPetButton(),
           ],
         ),
@@ -151,25 +156,33 @@ class PetAvatar extends StatelessWidget {
 }
 
 class AddPetButton extends StatelessWidget {
-  const AddPetButton({super.key});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
         final newPet = await context.pushNamed(
           AppRoute.editPetPage.name,
-          extra: Pet(name: '', age: 0, weight: 0.0, species: 'Dog', breed: 'Labrador'),
+          extra: Pet(
+            id: '',
+            name: '',
+            age: -1,
+            weight: -1,
+            species: 'Dog',
+            breed: 'Labrador',
+            sex: 'Male',
+            birthdate: DateTime.now(),
+            color: 'Brown',
+          ),
         );
 
         if (newPet != null && newPet is Pet) {
-          context.read<PetOwnerProvider>().addPet(newPet);
+          await context.read<PetProvider>().createPet(newPet.toJson());
         }
       },
       child: Column(
         children: [
           CircleAvatar(
-            radius: 30, // Adjust the size to match other pet avatars
+            radius: 30,
             backgroundColor: Colors.grey[400],
             child: const Icon(Icons.add, size: 30, color: Colors.black),
           ),

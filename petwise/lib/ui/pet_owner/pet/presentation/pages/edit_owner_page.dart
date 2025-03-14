@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:petwise/ui/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
+import 'package:petwise/data/models/pet_user.dart';
+import 'package:petwise/data/models/user.dart';
+import 'package:petwise/data/providers/pet_user_provider.dart';
+import 'package:petwise/data/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class EditOwnerPage extends StatefulWidget {
@@ -12,21 +15,34 @@ class EditOwnerPage extends StatefulWidget {
 }
 
 class _EditOwnerPageState extends State<EditOwnerPage> {
-  late TextEditingController _nameController;
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
+  late TextEditingController _userIDController;
   late TextEditingController _addressController;
   String? profileImage;
+  User? currentUser;
+  PetUser? petUser;
 
   @override
   void initState() {
     super.initState();
-    final petOwner = context.read<PetOwnerProvider>().petOwner;
-    _nameController = TextEditingController(text: petOwner.name);
-    _addressController = TextEditingController(text: petOwner.address);
+    final userProvider = context.watch<AuthProvider>();
+    final petUserProvider = context.watch<PetUserProvider>();
+
+    currentUser = userProvider.currentUser;
+    petUser = petUserProvider.currentPetUser;
+
+    _firstNameController = TextEditingController(text: currentUser?.firstName ?? '');
+    _lastNameController = TextEditingController(text: currentUser?.lastName ?? '');
+    _userIDController = TextEditingController(text: petUser?.userId ?? '');
+    _addressController = TextEditingController(text: petUser?.homeAddress ?? '');
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _userIDController.dispose();
     _addressController.dispose();
     super.dispose();
   }
@@ -42,20 +58,26 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
   }
 
   void _saveChanges() {
-    if (_nameController.text.isEmpty || _addressController.text.isEmpty) {
+    if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty 
+    || _userIDController.text.isEmpty || _addressController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter both name and address.')),
       );
       return;
     }
 
-    final updatedOwner = PetOwner(
-      name: _nameController.text,
-      address: _addressController.text,
-      pets: context.read<PetOwnerProvider>().petOwner.pets,
-    );
+    final updatedUserData = {
+      "firstName": _firstNameController.text,
+      "lastName": _lastNameController.text,
+    };
 
-    context.read<PetOwnerProvider>().updatePetOwner(updatedOwner);
+    final updatedPetUserData = {
+      "userID": _userIDController.text,
+      "address": _addressController.text,
+    };
+
+    context.read<AuthProvider>().updateUser(currentUser!.id, updatedUserData);
+    context.read<PetUserProvider>().updatePetUser(petUser!.id, updatedPetUserData);
     context.pop();
   }
 
@@ -87,8 +109,20 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
 
             // Name Field
             TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: "Full Name"),
+              controller: _firstNameController,
+              decoration: const InputDecoration(labelText: "First Name"),
+            ),
+            const SizedBox(height: 10),
+
+            TextField(
+              controller: _lastNameController,
+              decoration: const InputDecoration(labelText: "Last Name"),
+            ),
+            const SizedBox(height: 10),
+
+            TextField(
+              controller: _userIDController,
+              decoration: const InputDecoration(labelText: "User ID"),
             ),
             const SizedBox(height: 10),
 

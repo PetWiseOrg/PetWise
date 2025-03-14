@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:petwise/data/models/pet.dart';
+import 'package:petwise/data/models/pet_user.dart';
+import 'package:petwise/data/providers/pet_provider.dart';
+import 'package:petwise/data/providers/pet_user_provider.dart';
 import 'package:petwise/navigation/routing.dart';
 import 'package:petwise/ui/theme/app_theme.dart';
-import 'package:petwise/ui/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
 import 'package:provider/provider.dart';
 
 class PetOwnerProfilePage extends StatefulWidget {
@@ -14,13 +16,10 @@ class PetOwnerProfilePage extends StatefulWidget {
 }
 
 class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
-  void _addNewPet(Pet pet) {
-    context.read<PetOwnerProvider>().addPet(pet);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final petOwner = context.watch<PetOwnerProvider>().petOwner;
+    final petUser = context.watch<PetUserProvider>().currentPetUser;
+    final pets = context.watch<PetProvider>().pets;
 
     return Scaffold(
       backgroundColor: primary,
@@ -31,7 +30,7 @@ class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
       ),
       body: Column(
         children: [
-          ProfileHeader(petOwner: petOwner),
+          ProfileHeader(petUser: petUser),
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -41,8 +40,8 @@ class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
               ),
               child: ListView(
                 children: [
-                  ...petOwner.pets.map((pet) => PetCard(pet: pet)),
-                  AddPetButton(onPetAdded: _addNewPet),
+                  ...pets.map((pet) => PetCard(pet: pet)),
+                  const AddPetButton(),
                 ],
               ),
             ),
@@ -54,9 +53,9 @@ class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
 }
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.petOwner});
+  const ProfileHeader({super.key, required this.petUser});
 
-  final PetOwner petOwner;
+  final PetUser? petUser;
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +67,8 @@ class ProfileHeader extends StatelessWidget {
           CircleAvatar(radius: 40, backgroundColor: Colors.purple[100], child: const Icon(Icons.person, size: 40, color: Colors.purple)),
           const SizedBox(height: 10),
 
-          Text(petOwner.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-          Text(petOwner.address, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white70)),
+          Text(petUser!.userId, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+          Text(petUser!.homeAddress, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white70)),
 
           const SizedBox(height: 10),
 
@@ -86,7 +85,7 @@ class ProfileHeader extends StatelessWidget {
 }
 
 class PetCard extends StatelessWidget {
-  final Pet pet;
+  final Pet? pet;
   const PetCard({super.key, required this.pet});
 
   @override
@@ -108,7 +107,7 @@ class PetCard extends StatelessWidget {
             child: const Icon(Icons.pets, size: 30, color: Colors.purple),
           ),
           title: Text(
-            pet.name,
+            pet!.name,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           trailing: const Icon(Icons.edit, size: 18),
@@ -119,9 +118,7 @@ class PetCard extends StatelessWidget {
 }
 
 class AddPetButton extends StatelessWidget {
-  final Function(Pet) onPetAdded;
-
-  const AddPetButton({super.key, required this.onPetAdded});
+  const AddPetButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -129,11 +126,21 @@ class AddPetButton extends StatelessWidget {
       onTap: () async {
         final newPet = await context.pushNamed(
           AppRoute.editPetPage.name,
-          extra: Pet(name: '', age: 0, weight: 0.0, species: 'Dog', breed: 'Labrador'),
+          extra: Pet(
+            id: '',
+            name: '',
+            age: -1,
+            weight: -1,
+            species: 'Dog',
+            breed: 'Labrador',
+            sex: 'Male',
+            birthdate: DateTime.now(),
+            color: 'Brown',
+          ),
         );
 
         if (newPet != null && newPet is Pet) {
-          onPetAdded(newPet); // Add pet to the list
+          await context.read<PetProvider>().createPet(newPet.toJson());
         }
       },
       child: Padding(
@@ -145,11 +152,21 @@ class AddPetButton extends StatelessWidget {
           onPressed: () async {
             final newPet = await context.pushNamed(
               AppRoute.editPetPage.name,
-              extra: Pet(name: '', age: 0, weight: 0.0, species: 'Dog', breed: 'Labrador'),
+              extra: Pet(
+                id: '',
+                name: '',
+                age: -1,
+                weight: -1,
+                species: 'Dog',
+                breed: 'Labrador',
+                sex: 'Male',
+                birthdate: DateTime.now(),
+                color: 'Brown',
+              ),
             );
 
             if (newPet != null && newPet is Pet) {
-              onPetAdded(newPet);
+              await context.read<PetProvider>().createPet(newPet.toJson());
             }
           },
           icon: const Icon(Icons.add, color: Colors.black),

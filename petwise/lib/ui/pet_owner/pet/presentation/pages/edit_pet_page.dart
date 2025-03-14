@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:petwise/ui/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
+import 'package:petwise/data/models/pet.dart';
+import 'package:petwise/data/providers/pet_provider.dart';
 import 'package:provider/provider.dart';
 
 class EditPetPage extends StatefulWidget {
@@ -19,26 +20,18 @@ class _EditPetPageState extends State<EditPetPage> {
   late TextEditingController _nameController;
   late TextEditingController _ageController;
   late TextEditingController _weightController;
-  late String _selectedSpecies;
-  late String _selectedBreed;
+  late TextEditingController _speciesController;
+  late TextEditingController _breedController;
   String? petImage;
-
-  final List<String> speciesOptions = ['Dog', 'Cat', 'Bird', 'Other'];
-  final Map<String, List<String>> breedOptions = {
-    'Dog': ['Labrador', 'Bulldog', 'Beagle', 'Golden Retriever'],
-    'Cat': ['Siamese', 'Persian', 'Maine Coon', 'Bengal'],
-    'Bird': ['Parrot', 'Canary', 'Cockatoo', 'Macaw'],
-    'Other': ['Unknown']
-  };
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.pet.name);
-    _ageController = TextEditingController(text: widget.pet.age > 0 ? widget.pet.age.toString() : '');
-    _weightController = TextEditingController(text: widget.pet.weight > 0 ? widget.pet.weight.toString() : '');
-    _selectedSpecies = widget.pet.species.isNotEmpty ? widget.pet.species : speciesOptions.first;
-    _selectedBreed = widget.pet.breed.isNotEmpty ? widget.pet.breed : breedOptions[_selectedSpecies]!.first;
+    _ageController = TextEditingController(text: widget.pet.age > 0 ? widget.pet.age.toString() : 'Unknown');
+    _weightController = TextEditingController(text: widget.pet.weight > 0 ? widget.pet.weight.toString() : 'Unknown');
+    _speciesController = TextEditingController(text: widget.pet.species);
+    _breedController = TextEditingController(text: widget.pet.breed);
   }
 
   @override
@@ -59,28 +52,33 @@ class _EditPetPageState extends State<EditPetPage> {
     }
   }
 
-  void _saveChanges() {
+  Future<void> _saveChanges() async {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a pet name.')));
       return;
     }
 
     final updatedPet = Pet(
+      id: widget.pet.id,
       name: _nameController.text,
-      age: int.tryParse(_ageController.text) ?? 0,
-      weight: double.tryParse(_weightController.text) ?? 0.0,
-      species: _selectedSpecies,
-      breed: _selectedBreed,
+      age: double.parse(_ageController.text),
+      weight: double.parse(_weightController.text),
+      species: _speciesController.text,
+      breed: _breedController.text,
+      sex: widget.pet.sex,
+      birthdate: widget.pet.birthdate,
+      color: widget.pet.color,
+      chipNumber: widget.pet.chipNumber,
+      tagNumber: widget.pet.tagNumber,
     );
 
-    // Update Pet in Provider
-    final petOwnerProvider = context.read<PetOwnerProvider>();
-    final petIndex = petOwnerProvider.petOwner.pets.indexWhere((p) => p.name == widget.pet.name);
-    
+    final petProvider = context.read<PetProvider>();
+    final petIndex = petProvider.pets.indexWhere((p) => p.id == widget.pet.id);
+
     if (petIndex != -1) {
-      petOwnerProvider.updatePet(petIndex, updatedPet);
+      await petProvider.updatePet(widget.pet.id, updatedPet.toJson());
     } else {
-      petOwnerProvider.addPet(updatedPet);
+      await petProvider.createPet(updatedPet.toJson());
     }
 
     context.pop(); // Go back after saving
@@ -137,42 +135,21 @@ class _EditPetPageState extends State<EditPetPage> {
             ),
             const SizedBox(height: 20),
 
-            // Species Dropdown
-            DropdownButtonFormField<String>(
-              value: _selectedSpecies,
+            // Species Field
+            TextField(
+              controller: _speciesController,
               decoration: const InputDecoration(labelText: "Species"),
-              items: speciesOptions.map((species) {
-                return DropdownMenuItem(
-                  value: species,
-                  child: Text(species),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedSpecies = value!;
-                  _selectedBreed = breedOptions[_selectedSpecies]!.first;
-                });
-              },
+              keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 20),
 
-            // Breed Dropdown
-            DropdownButtonFormField<String>(
-              value: _selectedBreed,
+            // Breed Field
+            TextField(
+              controller: _breedController,
               decoration: const InputDecoration(labelText: "Breed"),
-              items: breedOptions[_selectedSpecies]!.map((breed) {
-                return DropdownMenuItem(
-                  value: breed,
-                  child: Text(breed),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedBreed = value!;
-                });
-              },
+              keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             ElevatedButton(
               onPressed: _saveChanges,

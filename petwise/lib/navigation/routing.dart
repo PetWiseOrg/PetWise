@@ -1,3 +1,4 @@
+import 'package:petwise/data/models/pet.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/forgot_password_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/password_reset_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/register/additional_info_page.dart';
@@ -10,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import 'package:petwise/ui/pet_owner/dashboard/presentation/pages/pet_owner_dashboard_page.dart';
 import 'package:petwise/ui/pet_owner/pet/presentation/pages/edit_owner_page.dart';
 import 'package:petwise/ui/pet_owner/pet/presentation/pages/edit_pet_page.dart';
-import 'package:petwise/ui/pet_owner/pet/presentation/pages/pet_owner_provider_class.dart';
 import 'package:petwise/ui/pet_owner/profile/presentation/pages/pet_owner_profile_page.dart';
 
 enum AppRoute {

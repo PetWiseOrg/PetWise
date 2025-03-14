@@ -1,6 +1,8 @@
 class Pet {
   final String id;
   final String name;
+  final double age;
+  final double weight;
   final String species;
   final String breed;
   final String sex;
@@ -12,6 +14,8 @@ class Pet {
   Pet({
     required this.id,
     required this.name,
+    required this.age,
+    required this.weight,
     required this.species,
     required this.breed,
     required this.sex,
@@ -25,6 +29,8 @@ class Pet {
     return Pet(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
+      age: json['age'] ?? '',
+      weight: json['weight'] ?? '',
       species: json['species'] ?? '',
       breed: json['breed'] ?? '',
       sex: json['sex'] ?? '',
@@ -39,6 +45,8 @@ class Pet {
     return {
       'id': id,
       'name': name,
+      'age': age,
+      'weight': weight,
       'species': species,
       'breed': breed,
       'sex': sex,
