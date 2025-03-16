@@ -6,8 +6,8 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Install/Update cloudflared",
-                "Start pocketbase",
                 "Start cloudflared tunnel",
+                "Start pocketbase",
                 "Update launch.json with tunnel URL"
             ],
             "problemMatcher": [],
