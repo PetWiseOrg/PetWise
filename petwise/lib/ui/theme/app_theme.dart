@@ -90,9 +90,9 @@ ThemeData petwiseTheme = ThemeData(
     scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
     appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 255, 255, 255)),
     iconTheme: const IconThemeData(
-      color: iconColor,
+      color: Color.fromARGB(255, 0, 0, 0),
     ),
     iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-      iconColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 255, 255, 255)),
+      iconColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 0, 0, 0)),
     )));
