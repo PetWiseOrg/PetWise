@@ -67,9 +67,18 @@ class UserRepository {
     await pb.collection('users').confirmVerification(token);
   }
 
+  Future<bool> hasConnectionToDB() async {
+    try {
+      await pb.health.check();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> isUserAuthenticated() async {
-    //return pb.authStore.isValid;
+    return pb.authStore.isValid;
     //testing
-    return false;
+    //return false;
   }
 }

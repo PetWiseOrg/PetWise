@@ -22,10 +22,20 @@ class WelcomePageState extends State<WelcomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authProvider = Provider.of<UserProvider>(context, listen: false);
+
+      // Check connection first
+      final hasConnection = await authProvider.hasConnectionToDB();
+      if (!hasConnection) {
+        if (!mounted) return;
+        context.goNamed(AppRoute.noConnection.name);
+        return;
+      }
+
       final hasValidCredentials = await checkStoredCredentials();
       if (hasValidCredentials) {
         //refresh current user
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final authProvider = Provider.of<UserProvider>(context, listen: false);
         await authProvider.refreshCurrentUser();
         //check if user is fully created
         final isFullyCreated = await authProvider.isUserFullyCreated(authProvider.currentUser!.id);
@@ -43,13 +53,10 @@ class WelcomePageState extends State<WelcomePage> {
             _isCheckingCredentials = false;
           });
           //redirect to additional info page
-          context.goNamed(AppRoute.additionalInfo.name);
-
           if (!mounted) return;
-          context.goNamed(AppRoute.homePage.name);
+          context.goNamed(AppRoute.additionalInfo.name);
         }
-      } 
-      else {
+      } else {
         setState(() {
           _isCheckingCredentials = false;
         });
@@ -58,7 +65,7 @@ class WelcomePageState extends State<WelcomePage> {
   }
 
   Future<bool> checkStoredCredentials() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<UserProvider>(context, listen: false);
     return authProvider.isUserAuthenticated();
   }
 

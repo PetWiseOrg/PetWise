@@ -32,12 +32,7 @@ class RegistrationPageState extends State<RegistrationPage> {
     super.dispose();
   }
 
-  void register(
-      BuildContext context,
-      ValueNotifier<String?> errorNotifier,
-      TextEditingController emailController,
-      TextEditingController passwordController,
-      TextEditingController confirmPasswordController) async {
+  void register(BuildContext context, ValueNotifier<String?> errorNotifier, TextEditingController emailController, TextEditingController passwordController, TextEditingController confirmPasswordController) async {
     final email = emailController.text;
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
@@ -49,7 +44,7 @@ class RegistrationPageState extends State<RegistrationPage> {
       return;
     }
 
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
       //create user
@@ -70,8 +65,7 @@ class RegistrationPageState extends State<RegistrationPage> {
       final end = errorString.indexOf(",", start);
       final message = errorString.substring(start + 9, end);
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -91,89 +85,87 @@ class RegistrationPageState extends State<RegistrationPage> {
     final width = MediaQuery.of(context).size.width * 0.75;
     const double heightPerObject = 75;
 
-    final loginText = Text.rich(TextSpan(
-        text: 'Already have an account? '.hardcoded,
-        style: textStyle,
-        children: <TextSpan>[
-          TextSpan(
-            text: 'Login now'.hardcoded,
-            style: clickableStyleMedium,
-          )
-        ]));
+    final loginText = Text.rich(TextSpan(text: 'Already have an account? '.hardcoded, style: textStyle, children: <TextSpan>[
+      TextSpan(
+        text: 'Login now'.hardcoded,
+        style: clickableStyleMedium,
+      )
+    ]));
 
-    return Scaffold(
-      appBar: GoNamedBackButtonTesting(name: AppRoute.welcomePage.name),
-      body: SingleChildScrollView(
-        child: Center(
-          child: SizedBox(
-            width: width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 80),
-                Image.asset(
-                  'assets/images/logo.jpg',
-                  width: 150,
-                  height: 150,
-                ),
-                const Text(
-                  'PetWise',
-                  style: TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
-                    height: 1.5,
+    return GestureDetector(
+      onTap: () {
+        // Dismiss the keyboard when tapping outside of a text field
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: GoNamedBackButtonTesting(name: AppRoute.welcomePage.name),
+        body: SingleChildScrollView(
+          child: Center(
+            child: SizedBox(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 80),
+                  Image.asset(
+                    'assets/images/logo.jpg',
+                    width: 150,
+                    height: 150,
                   ),
-                ),
-                const SizedBox(height: 50),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    wrap(
-                        ThemedTextField(
-                          hintText: 'Email'.hardcoded,
-                          controller: emailController,
-                        ),
-                        heightPerObject),
-                    wrap(
-                        ThemedTextField(
-                          hintText: 'Password'.hardcoded,
-                          controller: passwordController,
-                          obscureText: true,
-                        ),
-                        heightPerObject),
-                    wrap(
-                        ThemedTextField(
-                          hintText: 'Confirm Password'.hardcoded,
-                          controller: confirmPasswordController,
-                          obscureText: true,
-                        ),
-                        heightPerObject),
-                    wrap(
-                        LoginRegisterButton(
-                          onTap: () => register(
-                              context,
-                              errorNotifier,
-                              emailController,
-                              passwordController,
-                              confirmPasswordController),
-                          message: 'Register'.hardcoded,
-                          textStyle: titleStyleMedium,
-                          padding: 4,
-                          elevation: 4,
-                        ),
-                        heightPerObject),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                wrap(
-                    GestureDetector(
-                      onTap: () => loginRedirect(context),
-                      child: loginText,
+                  const Text(
+                    'PetWise',
+                    style: TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0,
+                      height: 1.5,
                     ),
-                    heightPerObject)
-              ],
+                  ),
+                  const SizedBox(height: 50),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      wrap(
+                          ThemedTextField(
+                            hintText: 'Email'.hardcoded,
+                            controller: emailController,
+                          ),
+                          heightPerObject),
+                      wrap(
+                          ThemedTextField(
+                            hintText: 'Password'.hardcoded,
+                            controller: passwordController,
+                            obscureText: true,
+                          ),
+                          heightPerObject),
+                      wrap(
+                          ThemedTextField(
+                            hintText: 'Confirm Password'.hardcoded,
+                            controller: confirmPasswordController,
+                            obscureText: true,
+                          ),
+                          heightPerObject),
+                      wrap(
+                          LoginRegisterButton(
+                            onTap: () => register(context, errorNotifier, emailController, passwordController, confirmPasswordController),
+                            message: 'Register'.hardcoded,
+                            textStyle: titleStyleMedium,
+                            padding: 4,
+                            elevation: 4,
+                          ),
+                          heightPerObject),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  wrap(
+                      GestureDetector(
+                        onTap: () => loginRedirect(context),
+                        child: loginText,
+                      ),
+                      heightPerObject)
+                ],
+              ),
             ),
           ),
         ),

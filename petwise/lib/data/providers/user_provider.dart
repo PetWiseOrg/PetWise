@@ -3,10 +3,10 @@ import 'package:petwise/data/repositories/user_repo.dart';
 import 'package:petwise/data/models/user.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AuthProvider extends ChangeNotifier {
+class UserProvider extends ChangeNotifier {
   final UserRepository _userRepo;
 
-  AuthProvider(this._userRepo);
+  UserProvider(this._userRepo);
 
   User? _currentUser;
   User? get currentUser => _currentUser;
@@ -44,11 +44,9 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateUserProfile(
-      String userId, Map<String, dynamic> userData, XFile profileImage) async {
+  Future<void> updateUserProfile(String userId, Map<String, dynamic> userData, XFile profileImage) async {
     try {
-      final userJson =
-          await _userRepo.updateUserProfile(userId, userData, profileImage);
+      final userJson = await _userRepo.updateUserProfile(userId, userData, profileImage);
       _currentUser = User.fromJson(userJson);
       notifyListeners();
     } catch (e) {
@@ -125,6 +123,7 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+
   Future<bool> isUserFullyCreated(String userId) async {
     try {
       //refresh current user
@@ -132,9 +131,18 @@ class AuthProvider extends ChangeNotifier {
       //check if user is fully created
       final isFullyCreated = _currentUser!.isFullyCreated;
       return isFullyCreated;
-
     } catch (e) {
       print('Error checking user authentication: $e');
+      return false;
+    }
+  }
+
+  Future<bool> hasConnectionToDB() async {
+    try {
+      final hasConnection = await _userRepo.hasConnectionToDB();
+      return hasConnection;
+    } catch (e) {
+      print('Error checking connection to DB: $e');
       return false;
     }
   }

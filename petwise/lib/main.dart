@@ -42,8 +42,8 @@ Future<void> main() async {
         Provider<UserRepository>(
           create: (_) => UserRepository.getInstance(pb),
         ),
-        ChangeNotifierProvider<AuthProvider>(
-          create: (context) => AuthProvider(
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => UserProvider(
             Provider.of<UserRepository>(context, listen: false),
           ),
         ),

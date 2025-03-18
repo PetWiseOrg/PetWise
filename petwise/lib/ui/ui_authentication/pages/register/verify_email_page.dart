@@ -51,7 +51,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   void _startPolling() {
     _pollingTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
       try {
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final authProvider = Provider.of<UserProvider>(context, listen: false);
         await authProvider.authenticateUser(widget.email, widget.password);
 
         if (authProvider.currentUser?.verified == true) {

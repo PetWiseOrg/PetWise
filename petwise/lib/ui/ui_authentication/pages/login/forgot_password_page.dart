@@ -25,10 +25,9 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
     super.dispose();
   }
 
-  void sendEmail(
-      BuildContext context, TextEditingController emailController) async {
+  void sendEmail(BuildContext context, TextEditingController emailController) async {
     if (emailController.text.isNotEmpty) {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final authProvider = Provider.of<UserProvider>(context, listen: false);
       try {
         await authProvider.requestPasswordReset(emailController.text);
         context.goNamed(AppRoute.passwordReset.name);
@@ -38,8 +37,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
         final end = errorString.indexOf(",", start);
         final message = errorString.substring(start + 9, end);
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(message)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
       }
     }
   }
@@ -65,66 +63,72 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
       style: clickableStyleMedium,
     );
 
-    return Scaffold(
-      appBar: GoNamedBackButtonTesting(name: AppRoute.loginPage.name),
-      body: SingleChildScrollView(
-        child: Center(
-          child: SizedBox(
-            width: width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 80),
-                Image.asset(
-                  'assets/images/logo.jpg',
-                  width: 150,
-                  height: 150,
-                ),
-                const Text(
-                  'PetWise',
-                  style: TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
-                    height: 1.5,
+    return GestureDetector(
+      onTap: () {
+        // Dismiss the keyboard when tapping outside of a text field
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: GoNamedBackButtonTesting(name: AppRoute.loginPage.name),
+        body: SingleChildScrollView(
+          child: Center(
+            child: SizedBox(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 80),
+                  Image.asset(
+                    'assets/images/logo.jpg',
+                    width: 150,
+                    height: 150,
                   ),
-                ),
-                const SizedBox(height: 50),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    wrap(
-                        Text(
-                          'Forgot your password?'.hardcoded,
-                          style: titleStyleMedium,
-                        ),
-                        heightPerObject),
-                    wrap(
-                        ThemedTextField(
-                          hintText: 'Email'.hardcoded,
-                          controller: emailController,
-                        ),
-                        heightPerObject),
-                    wrap(
-                        LoginRegisterButton(
-                          onTap: () => sendEmail(context, emailController),
-                          message: 'Send Reset Email'.hardcoded,
-                          textStyle: titleStyleMedium,
-                          padding: 4,
-                          elevation: 4,
-                        ),
-                        heightPerObject),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                wrap(
-                    GestureDetector(
-                      onTap: () => loginRedirect(context),
-                      child: goBackText,
+                  const Text(
+                    'PetWise',
+                    style: TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0,
+                      height: 1.5,
                     ),
-                    heightPerObject)
-              ],
+                  ),
+                  const SizedBox(height: 50),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      wrap(
+                          Text(
+                            'Forgot your password?'.hardcoded,
+                            style: titleStyleMedium,
+                          ),
+                          heightPerObject),
+                      wrap(
+                          ThemedTextField(
+                            hintText: 'Email'.hardcoded,
+                            controller: emailController,
+                          ),
+                          heightPerObject),
+                      wrap(
+                          LoginRegisterButton(
+                            onTap: () => sendEmail(context, emailController),
+                            message: 'Send Reset Email'.hardcoded,
+                            textStyle: titleStyleMedium,
+                            padding: 4,
+                            elevation: 4,
+                          ),
+                          heightPerObject),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  wrap(
+                      GestureDetector(
+                        onTap: () => loginRedirect(context),
+                        child: goBackText,
+                      ),
+                      heightPerObject)
+                ],
+              ),
             ),
           ),
         ),
