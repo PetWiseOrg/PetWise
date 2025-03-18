@@ -28,6 +28,7 @@ enum AppRoute {
   vetClinicPage,
   vetCalendarPage,
   addNewEventPage,
+  noConnection,
 }
 
 final router = GoRouter(
