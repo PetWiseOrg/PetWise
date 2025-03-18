@@ -11,9 +11,11 @@ class GoNamedBackButtonTesting extends StatelessWidget implements PreferredSizeW
 
   @override
   Widget build(BuildContext context) {
-
     void goBack() {
-      context.goNamed(name);
+      context.goNamed(
+        name,
+        extra: {'transition': 'rightToLeft'},
+      );
     }
 
     return AppBar(
@@ -23,7 +25,7 @@ class GoNamedBackButtonTesting extends StatelessWidget implements PreferredSizeW
       ),
     );
   }
-  
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

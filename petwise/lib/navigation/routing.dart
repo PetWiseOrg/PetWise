@@ -11,6 +11,7 @@ import 'package:petwise/ui/ui_authentication/pages/register/verify_email_page.da
 import 'package:petwise/ui/ui_home/pages/home_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/login_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/register/registration_page.dart';
+import 'package:petwise/ui/ui_authentication/pages/no_connection_page.dart';
 import 'package:go_router/go_router.dart';
 
 enum AppRoute {
@@ -36,12 +37,62 @@ final router = GoRouter(
     GoRoute(
       path: '/welcome',
       name: AppRoute.welcomePage.name,
-      builder: (context, state) => const WelcomePage(),
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, String>?;
+        final transition = extra?['transition'];
+
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: const WelcomePage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (transition == 'rightToLeft') {
+              final curvedAnimation = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              );
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(-1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(curvedAnimation),
+                child: child,
+              );
+            }
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 200), // Make transition faster
+        );
+      },
     ),
     GoRoute(
       path: '/login',
       name: AppRoute.loginPage.name,
-      builder: (context, state) => const LoginPage(),
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, String>?;
+        final transition = extra?['transition'];
+
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: const LoginPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (transition == 'rightToLeft') {
+              final curvedAnimation = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              );
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(-1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(curvedAnimation),
+                child: child,
+              );
+            }
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 200),
+        );
+      },
     ),
     GoRoute(
       path: '/forgot_password',
@@ -104,6 +155,11 @@ final router = GoRouter(
 
 
 
+    GoRoute(
+      path: '/no_connection',
+      name: AppRoute.noConnection.name,
+      builder: (context, state) => const NoConnectionPage(),
+    ),
   ],
 );
 

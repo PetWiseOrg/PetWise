@@ -27,26 +27,49 @@ class LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void login(BuildContext context, TextEditingController usernameController,
-      TextEditingController passwordController) async {
-    if (usernameController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty) {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  void login(BuildContext context, TextEditingController usernameController, TextEditingController passwordController) async {
+    if (usernameController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      final authProvider = Provider.of<UserProvider>(context, listen: false);
       try {
-        await authProvider.authenticateUser(
-            usernameController.text, passwordController.text);
+        await authProvider.authenticateUser(usernameController.text, passwordController.text);
+        //refresh current user
+        await authProvider.refreshCurrentUser();
+        //check if user is fully created
+        final isFullyCreated = await authProvider.isUserFullyCreated(authProvider.currentUser!.id);
         if (context.mounted) {
-          context.goNamed(AppRoute.homePage.name);
+          if (isFullyCreated) {
+            //redirect to home page
+            context.goNamed(AppRoute.homePage.name);
+          } else {
+            //redirect to additional info page
+            context.goNamed(AppRoute.additionalInfo.name);
+          }
         }
       } catch (error) {
         if (!mounted) return;
-        final errorString = error.toString();
-        final start = errorString.indexOf('message:');
-        final end = errorString.indexOf(",", start);
-        final message = errorString.substring(start + 9, end);
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(message)));
+        final Map<String, dynamic> errorData = error is Map ? error : (error as dynamic).response;
+        if (errorData["message"] == "Please verify your account first.") {
+          // If the user is not verified, redirect to the verification page
+          //send verification email (disabled for testing)
+          //await authProvider.sendVerificationEmail(usernameController.text);
+          //redirect to verification page
+          context.goNamed(
+            AppRoute.verifyEmail.name,
+            extra: {'email': usernameController.text, 'password': passwordController.text},
+          );
+        }
+
+        final errorString = error.toString();
+        try {
+          final start = errorString.indexOf('message:');
+          final end = errorString.indexOf(",", start);
+          final message = errorString.substring(start + 9, end);
+
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorString)));
+        }
       }
     }
   }
@@ -71,92 +94,94 @@ class LoginPageState extends State<LoginPage> {
     final width = MediaQuery.of(context).size.width * 0.75;
     const double heightPerObject = 75;
 
-    final signUpText = Text.rich(TextSpan(
-        text: 'Don\'t have an account? '.hardcoded,
-        style: textStyle,
-        children: <TextSpan>[
-          TextSpan(
-            text: 'Register now'.hardcoded,
-            style: clickableStyleMedium,
-          )
-        ]));
+    final signUpText = Text.rich(TextSpan(text: 'Don\'t have an account? '.hardcoded, style: textStyle, children: <TextSpan>[
+      TextSpan(
+        text: 'Register now'.hardcoded,
+        style: clickableStyleMedium,
+      )
+    ]));
 
-    return Scaffold(
-      appBar: GoNamedBackButtonTesting(name: AppRoute.welcomePage.name),
-      body: SingleChildScrollView(
-        child: Center(
-          child: SizedBox(
-            width: width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 80),
-                Image.asset(
-                  'assets/images/logo.jpg',
-                  width: 150,
-                  height: 150,
-                ),
-                const Text(
-                  'PetWise',
-                  style: TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
-                    height: 1.5,
+    return GestureDetector(
+      onTap: () {
+        // Dismiss the keyboard when tapping outside of a text field
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: GoNamedBackButtonTesting(name: AppRoute.welcomePage.name),
+        body: SingleChildScrollView(
+          child: Center(
+            child: SizedBox(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 80),
+                  Image.asset(
+                    'assets/images/logo.jpg',
+                    width: 150,
+                    height: 150,
                   ),
-                ),
-                const SizedBox(height: 50),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    wrap(
-                        ThemedTextField(
-                          hintText: 'Email or Username'.hardcoded,
-                          controller: usernameController,
-                        ),
-                        heightPerObject),
-                    wrap(
-                        ThemedTextField(
-                          hintText: 'Password'.hardcoded,
-                          obscureText: true,
-                          controller: passwordController,
-                        ),
-                        heightPerObject),
-                    wrap(
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () => forgotPasswordRedirect(context),
-                              child: Text(
-                                'Forgot Password?'.hardcoded,
-                                style: clickableStyleMedium,
-                              ),
-                            ),
-                          ],
-                        ),
-                        heightPerObject),
-                    wrap(
-                        LoginRegisterButton(
-                          onTap: () => login(
-                              context, usernameController, passwordController),
-                          message: 'Login'.hardcoded,
-                          textStyle: titleStyleMedium,
-                          padding: 4,
-                          elevation: 4,
-                        ),
-                        heightPerObject),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                wrap(
-                    GestureDetector(
-                      onTap: () => registerRedirect(context),
-                      child: signUpText,
+                  const Text(
+                    'PetWise',
+                    style: TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0,
+                      height: 1.5,
                     ),
-                    heightPerObject)
-              ],
+                  ),
+                  const SizedBox(height: 50),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      wrap(
+                          ThemedTextField(
+                            hintText: 'Email or Username'.hardcoded,
+                            controller: usernameController,
+                          ),
+                          heightPerObject),
+                      wrap(
+                          ThemedTextField(
+                            hintText: 'Password'.hardcoded,
+                            obscureText: true,
+                            controller: passwordController,
+                          ),
+                          heightPerObject),
+                      wrap(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () => forgotPasswordRedirect(context),
+                                child: Text(
+                                  'Forgot Password?'.hardcoded,
+                                  style: clickableStyleMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                          heightPerObject),
+                      wrap(
+                          LoginRegisterButton(
+                            onTap: () => login(context, usernameController, passwordController),
+                            message: 'Login'.hardcoded,
+                            textStyle: titleStyleMedium,
+                            padding: 4,
+                            elevation: 4,
+                          ),
+                          heightPerObject),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  wrap(
+                      GestureDetector(
+                        onTap: () => registerRedirect(context),
+                        child: signUpText,
+                      ),
+                      heightPerObject)
+                ],
+              ),
             ),
           ),
         ),
