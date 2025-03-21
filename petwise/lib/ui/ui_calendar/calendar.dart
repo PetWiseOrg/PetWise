@@ -40,6 +40,7 @@ class _CalendarState extends State<Calendar> {
         initialDay: selectedDate,
         headerStyle: headerStyle,
         onPageChange: (date, page) => selectedDate = date,
+        dateStringBuilder: (date, {secondaryDate}) => DateFormat.yMMMMd().format(date),
       );
       buttonRow = Row(
         children: [
@@ -62,6 +63,14 @@ class _CalendarState extends State<Calendar> {
         startDay: WeekDays.sunday,
         onPageChange: (date, page) => selectedDate = date,
         headerStyle: headerStyle,
+        headerStringBuilder: (date, {secondaryDate}) => '${DateFormat.MMMMd().format(date)} - ${DateFormat.yMMMMd().format(secondaryDate!)}',
+        hourIndicatorSettings: const HourIndicatorSettings(
+          color: Colors.blueGrey,
+        ),
+        timeLineBuilder: (date) => DefaultTimeLineMark(
+          date: date,
+          markingStyle: const TextStyle(color: Colors.blueGrey),
+        ),
       );
       buttonRow = Row(
         children: [
