@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petwise/data/models/pet.dart';
 import 'package:petwise/data/models/pet_user.dart';
+import 'package:petwise/data/models/user.dart';
 import 'package:petwise/data/providers/pet_provider.dart';
 import 'package:petwise/data/providers/pet_user_provider.dart';
+import 'package:petwise/data/providers/user_provider.dart';
 import 'package:petwise/navigation/routing.dart';
 import 'package:petwise/ui/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +15,20 @@ class PetOwnerDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final petUserProvider = context.watch<PetUserProvider>();
+    var petUserProvider= Provider.of<PetUserProvider>(context, listen: false);
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    // Fetch the current pet user and user from their respective providers
+    // This ensures that the data is available for the ProfileHeader widget
+    // and other parts of the dashboard page.
+    userProvider.refreshCurrentUser();
+    petUserProvider.loadPetUser(userProvider.currentUser!.id);
+    // if petUser is null, it means the user has not created a pet profile yet
+    // create an empty petUser on the db
+    if (petUserProvider.currentPetUser == null) {
+      petUserProvider.createPetUser({
+        'user': userProvider.currentUser!.id,
+      });
+    }
 
     final petUser = petUserProvider.currentPetUser;
 
@@ -29,29 +44,31 @@ class PetOwnerDashboardPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 75,),
-              ProfileHeader(petUser: petUser,),
+              const SizedBox(
+                height: 75,
+              ),
+              ProfileHeader(petUser: petUser, user: userProvider.currentUser),
               const SizedBox(height: 50),
               const SectionTitle(title: 'Upcoming Appointments'),
               const Divider(),
-              
               const SizedBox(height: 100),
-
               const SectionTitle(title: 'My Pets'),
               const Divider(),
               const SizedBox(height: 10),
               PetsList(),
-
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               const SectionTitle(title: 'Previous Appointments & Treatment Plans'),
               const Divider(),
-
-              const SizedBox(height: 100,),
-              
+              const SizedBox(
+                height: 100,
+              ),
               const SectionTitle(title: 'Recent Chats'),
               const Divider(),
-
-              const SizedBox(height: 100,),
+              const SizedBox(
+                height: 100,
+              ),
             ],
           ),
         ),
@@ -61,33 +78,37 @@ class PetOwnerDashboardPage extends StatelessWidget {
 }
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.petUser});
+  const ProfileHeader({super.key, required this.petUser, required this.user});
 
   final PetUser? petUser;
-  
+  final User? user;
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Hello,', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text(petUser!.userId, style: const TextStyle(fontSize: 22)),
-          ],
-        ),
-        GestureDetector(
-          onTap: () {
-            context.pushNamed(AppRoute.petOwnerProfilePage.name, extra: petUser);
-          },
-          child: CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.purple[100], 
-            child: const Icon(Icons.person, size: 40, color: Colors.purple),
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, right: 35),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Hello,', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              if (user != null) Text(user!.firstName + " " + user!.lastName, style: const TextStyle(fontSize: 22)),
+            ],
           ),
-        ),
-      ],
+          GestureDetector(
+            onTap: () {
+              context.pushNamed(AppRoute.petOwnerProfilePage.name, extra: petUser);
+            },
+            child: CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.purple[100],
+              child: const Icon(Icons.person, size: 40, color: Colors.purple),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -110,7 +131,7 @@ class PetsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pets = context.watch<PetProvider>().pets;
+    final pets = Provider.of<PetProvider>(context, listen: false);
 
     return SizedBox(
       height: 100,
@@ -118,7 +139,7 @@ class PetsList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            ...pets.map((pet) => PetAvatar(pet: pet)),
+            ...pets.pets.map((pet) => PetAvatar(pet: pet)),
             AddPetButton(),
           ],
         ),

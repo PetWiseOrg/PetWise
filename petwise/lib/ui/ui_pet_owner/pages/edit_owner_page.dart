@@ -17,7 +17,6 @@ class EditOwnerPage extends StatefulWidget {
 class _EditOwnerPageState extends State<EditOwnerPage> {
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
-  late TextEditingController _userIDController;
   late TextEditingController _addressController;
   String? profileImage;
   User? currentUser;
@@ -26,15 +25,14 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
   @override
   void initState() {
     super.initState();
-    final userProvider = context.watch<AuthProvider>();
-    final petUserProvider = context.watch<PetUserProvider>();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final petUserProvider = Provider.of<PetUserProvider>(context, listen: false);
 
     currentUser = userProvider.currentUser;
     petUser = petUserProvider.currentPetUser;
 
     _firstNameController = TextEditingController(text: currentUser?.firstName ?? '');
     _lastNameController = TextEditingController(text: currentUser?.lastName ?? '');
-    _userIDController = TextEditingController(text: petUser?.userId ?? '');
     _addressController = TextEditingController(text: petUser?.homeAddress ?? '');
   }
 
@@ -42,7 +40,6 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _userIDController.dispose();
     _addressController.dispose();
     super.dispose();
   }
@@ -58,8 +55,7 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
   }
 
   void _saveChanges() {
-    if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty 
-    || _userIDController.text.isEmpty || _addressController.text.isEmpty) {
+    if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter both name and address.')),
       );
@@ -71,13 +67,16 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
       "lastName": _lastNameController.text,
     };
 
-    final updatedPetUserData = {
-      "userID": _userIDController.text,
-      "address": _addressController.text,
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.updateUser(userProvider.currentUser!.id, updatedUserData);
+
+    var updatedPetUserData = {
+      "homeAddress": _addressController.text,
     };
 
-    context.read<AuthProvider>().updateUser(currentUser!.id, updatedUserData);
-    context.read<PetUserProvider>().updatePetUser(petUser!.id, updatedPetUserData);
+    var petUserProvider = Provider.of<PetUserProvider>(context, listen: false);
+    petUserProvider.updatePetUser(petUserProvider.currentPetUser!.id, updatedPetUserData);
+
     context.pop();
   }
 
@@ -117,12 +116,6 @@ class _EditOwnerPageState extends State<EditOwnerPage> {
             TextField(
               controller: _lastNameController,
               decoration: const InputDecoration(labelText: "Last Name"),
-            ),
-            const SizedBox(height: 10),
-
-            TextField(
-              controller: _userIDController,
-              decoration: const InputDecoration(labelText: "User ID"),
             ),
             const SizedBox(height: 10),
 

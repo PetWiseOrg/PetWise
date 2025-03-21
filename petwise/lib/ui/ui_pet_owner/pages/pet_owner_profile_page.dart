@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petwise/data/models/pet.dart';
 import 'package:petwise/data/models/pet_user.dart';
+import 'package:petwise/data/models/user.dart';
 import 'package:petwise/data/providers/pet_provider.dart';
 import 'package:petwise/data/providers/pet_user_provider.dart';
+import 'package:petwise/data/providers/user_provider.dart';
 import 'package:petwise/navigation/routing.dart';
 import 'package:petwise/ui/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +20,9 @@ class PetOwnerProfilePage extends StatefulWidget {
 class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final petUser = context.watch<PetUserProvider>().currentPetUser;
-    final pets = context.watch<PetProvider>().pets;
+    final petUser = Provider.of<PetUserProvider>(context, listen: false);
+    final user = Provider.of<UserProvider>(context, listen: false).currentUser;
+    final pets = Provider.of<PetProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: primary,
@@ -30,7 +33,7 @@ class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
       ),
       body: Column(
         children: [
-          ProfileHeader(petUser: petUser),
+          ProfileHeader(petUser: petUser.currentPetUser, user: user,),
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -40,7 +43,7 @@ class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
               ),
               child: ListView(
                 children: [
-                  ...pets.map((pet) => PetCard(pet: pet)),
+                  ...pets.pets.map((pet) => PetCard(pet: pet)),
                   const AddPetButton(),
                 ],
               ),
@@ -53,25 +56,23 @@ class _PetOwnerProfilePageState extends State<PetOwnerProfilePage> {
 }
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.petUser});
+  const ProfileHeader({super.key, required this.petUser, required this.user});
 
   final PetUser? petUser;
+  final User? user;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-
       child: Column(
         children: [
-          CircleAvatar(radius: 40, backgroundColor: Colors.purple[100], child: const Icon(Icons.person, size: 40, color: Colors.purple)),
+          CircleAvatar(
+              radius: 40, backgroundColor: Colors.purple[100], child: const Icon(Icons.person, size: 40, color: Colors.purple)),
           const SizedBox(height: 10),
-
-          Text(petUser!.userId, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+          Text(user!.firstName + " " + user!.lastName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
           Text(petUser!.homeAddress, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white70)),
-
           const SizedBox(height: 10),
-
           IconButton(
             icon: const Icon(Icons.edit, color: Colors.white),
             onPressed: () {

@@ -64,7 +64,11 @@ class AdditionalInfoPageState extends State<AdditionalInfoPage> {
     try {
       await authProvider.updateUserProfile(userId, body, profileImage);
       if (mounted) {
-        context.goNamed(AppRoute.homePage.name);
+        if (authProvider.currentUser!.userType == 'Vet') {
+          //context.goNamed(AppRoute.vetDashboardPage.name);
+        } else {
+          context.goNamed(AppRoute.petOwnerDashboardPage.name);
+        }
       }
     } catch (error) {
       if (!mounted) return;
