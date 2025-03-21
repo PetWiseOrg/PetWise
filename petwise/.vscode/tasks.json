@@ -6,8 +6,8 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Install/Update cloudflared",
-                "Start pocketbase",
                 "Start cloudflared tunnel",
+                "Start pocketbase",
                 "Update launch.json with tunnel URL"
             ],
             "problemMatcher": [],
@@ -75,6 +75,28 @@
                     "FORCE_COLOR": "1"
                 }
             }
+        },
+        {
+            "label": "Stop cloudflared tunnel",
+            "type": "shell",
+            "windows": {
+                "command": "taskkill /IM cloudflared.exe /F"
+            },
+            "linux": {
+                "command": "pkill cloudflared || true"
+            },
+            "osx": {
+                "command": "pkill cloudflared || true"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            },
+            "group": "none"
         },
         {
             "label": "Update launch.json with tunnel URL",
@@ -160,6 +182,22 @@
                 "close": true
             },
             "group": "none"
-        }
+        },
+        {
+            "label": "Stop all services",
+            "dependsOn": [
+                "Stop pocketbase",
+                "Stop cloudflared tunnel"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "group": "none"
+        },
     ]
 }

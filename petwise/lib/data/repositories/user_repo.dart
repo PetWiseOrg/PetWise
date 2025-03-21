@@ -25,6 +25,11 @@ class UserRepository {
     return record.toJson();
   }
 
+  Future<Map<String, dynamic>> refreshCurrentUser() async {
+    final record = await pb.collection('users').getOne(pb.authStore.model!.id!);
+    return record.toJson();
+  }
+
   Future<Map<String, dynamic>> updateUserProfile(String userId, Map<String, dynamic> userData, XFile? profileImage) async {
     List<http.MultipartFile> files = [];
     if (profileImage != null && profileImage.path.isNotEmpty) {
@@ -53,13 +58,27 @@ class UserRepository {
     await pb.collection('users').requestPasswordReset(email);
   }
 
+  //send verification email
+  Future<void> sendVerificationEmail(String email) async {
+    await pb.collection('users').requestVerification(email);
+  }
+
   Future<void> verifyEmail(String token) async {
     await pb.collection('users').confirmVerification(token);
   }
 
+  Future<bool> hasConnectionToDB() async {
+    try {
+      await pb.health.check();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> isUserAuthenticated() async {
-    //return pb.authStore.isValid;
+    return pb.authStore.isValid;
     //testing
-    return false;
+    //return false;
   }
 }

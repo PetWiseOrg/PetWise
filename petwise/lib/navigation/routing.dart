@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:petwise/data/models/pet.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/forgot_password_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/password_reset_page.dart';
@@ -7,27 +8,18 @@ import 'package:petwise/ui/ui_home/pages/home_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/login_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/register/registration_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/welcome_page.dart';
+import 'package:petwise/ui/ui_authentication/pages/no_connection_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petwise/ui/pet_owner/dashboard/presentation/pages/pet_owner_dashboard_page.dart';
 import 'package:petwise/ui/pet_owner/pet/presentation/pages/edit_owner_page.dart';
 import 'package:petwise/ui/pet_owner/pet/presentation/pages/edit_pet_page.dart';
 import 'package:petwise/ui/pet_owner/profile/presentation/pages/pet_owner_profile_page.dart';
 
-enum AppRoute {
-  welcomePage,
-  loginPage,
-  forgotPasswordPage,
-  registrationPage,
-  homePage,
-  forgotPassword,
-  passwordReset,
-  verifyEmail,
-  additionalInfo,
+enum AppRoute { welcomePage, loginPage, forgotPasswordPage, registrationPage, homePage, forgotPassword, passwordReset, verifyEmail, additionalInfo,
   petOwnerDashboardPage,
   petOwnerProfilePage,
   editPetPage,
-  editOwnerPage,
-}
+  editOwnerPage, noConnection }
 
 final router = GoRouter(
   initialLocation: '/petOwnerDashboardPage',
@@ -35,12 +27,62 @@ final router = GoRouter(
     GoRoute(
       path: '/welcome',
       name: AppRoute.welcomePage.name,
-      builder: (context, state) => WelcomePage(),
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, String>?;
+        final transition = extra?['transition'];
+
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: const WelcomePage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (transition == 'rightToLeft') {
+              final curvedAnimation = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              );
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(-1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(curvedAnimation),
+                child: child,
+              );
+            }
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 200), // Make transition faster
+        );
+      },
     ),
     GoRoute(
       path: '/login',
       name: AppRoute.loginPage.name,
-      builder: (context, state) => const LoginPage(),
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, String>?;
+        final transition = extra?['transition'];
+
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: const LoginPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (transition == 'rightToLeft') {
+              final curvedAnimation = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              );
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(-1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(curvedAnimation),
+                child: child,
+              );
+            }
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 200),
+        );
+      },
     ),
     GoRoute(
       path: '/forgot_password',
@@ -76,6 +118,11 @@ final router = GoRouter(
       path: '/',
       name: AppRoute.homePage.name,
       builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: '/no_connection',
+      name: AppRoute.noConnection.name,
+      builder: (context, state) => const NoConnectionPage(),
     ),
     GoRoute(
       path: '/petOwnerDashboardPage',
