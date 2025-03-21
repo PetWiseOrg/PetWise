@@ -10,7 +10,6 @@ class VetClinicPage extends StatefulWidget {
   VetClinicPageState createState() => VetClinicPageState();
 }
 
-
 class VetClinicPageState extends State<VetClinicPage> {
   int _selectedIndex = 1;
   void _onItemTapped(int index) {
@@ -67,7 +66,7 @@ class VetClinicPageState extends State<VetClinicPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ListView(
                   padding: EdgeInsets.zero,
-                //  physics: const ClampingScrollPhysics(),
+                  //  physics: const ClampingScrollPhysics(),
                   children: const [
                     VetAccountSummaryWidget(),
                     VetAccountSummaryWidget(),
@@ -88,10 +87,12 @@ class VetClinicPageState extends State<VetClinicPage> {
                     builder: (context) {
                       return showAlert(context);
                     },
-                  );                    
-
+                  );
                 },
-                icon: const Icon(Icons.add, color: Colors.black,),
+                icon: const Icon(
+                  Icons.add,
+                  color: Colors.black,
+                ),
                 label: const Text('Add Staff', style: TextStyle(fontSize: 25, color: Colors.black)),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(16.0),
@@ -115,13 +116,12 @@ class VetClinicPageState extends State<VetClinicPage> {
   }
 }
 
-
 AlertDialog showAlert(BuildContext context) {
   int code = Random().nextInt(899999) + 100000;
   return AlertDialog(
     content: Column(
       mainAxisSize: MainAxisSize.min,
-      children:  [
+      children: [
         const Text('Share this code with the new staff member to allow them to join the clinic', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 20),
         Text('Code: $code', style: const TextStyle(fontSize: 25)),
@@ -137,3 +137,4 @@ AlertDialog showAlert(BuildContext context) {
     ],
   );
 }
+

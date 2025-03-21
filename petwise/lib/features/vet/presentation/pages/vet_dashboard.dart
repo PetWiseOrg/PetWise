@@ -3,6 +3,7 @@ import 'package:petwise/features/vet/presentation/widgets/vet_bottom_bar_widget.
 import 'package:petwise/features/vet/presentation/widgets/vet_calendar_event_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petwise/navigation/routing.dart';
+import 'package:petwise/ui/common_widgets/pickers/time_picker_widget.dart';
 
 class VetDashboardPage extends StatefulWidget {
   const VetDashboardPage({super.key});
@@ -19,7 +20,6 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
       _selectedIndex = index;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,82 +55,74 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
       body: Column(
         children: [
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Upcoming Appointments',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
-                  const SizedBox(height: 5), // Space between text and line
-                  const Divider(
+                  SizedBox(height: 5), // Space between text and line
+                  Divider(
                     color: Color.fromARGB(255, 217, 217, 217), // Faint line color
                     thickness: 1,
                     indent: 10,
                     endIndent: 10,
                   ),
-
-                  //TODO this will have a listview showing the upcoming appointments. It will start from next appointment and go down from there.
-                  //It will be divided by day, with the date at the top of each day.
-
-                  SizedBox(
-                    height: 520,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: ListView(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        //  physics: const ClampingScrollPhysics(),
-
-                        children: const [
-                          VetCalendarEventWidget(
-                            appointmentTime: '12:00 PM',
-                            clientName: 'John Doe',
-                            petName: 'Fido',
-                          ),
-                          VetCalendarEventWidget(
-                            appointmentTime: '12:00 PM',
-                            clientName: 'John Doe',
-                            petName: 'Fido',
-                          ),
-                          VetCalendarEventWidget(
-                            appointmentTime: '12:00 PM',
-                            clientName: 'John Doe',
-                            petName: 'Fido',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  //Add event button
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        context.goNamed(AppRoute.addNewEventPage.name);
-                        print('Add Event tapped');
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add Event', style: TextStyle(fontSize: 22, color: Colors.black)),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(16.0),
-                        backgroundColor: Colors.grey[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
           ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: const [
+                  VetCalendarEventWidget(
+                    appointmentTime: '12:00 PM',
+                    clientName: 'John Doe',
+                    petName: 'Fido',
+                  ),
+                  VetCalendarEventWidget(
+                    appointmentTime: '1:00 PM',
+                    clientName: 'Jane Smith',
+                    petName: 'Whiskers',
+                  ),
+                  VetCalendarEventWidget(
+                    appointmentTime: '2:00 PM',
+                    clientName: 'Alice Johnson',
+                    petName: 'Buddy',
+                  ),
+                  // Add more VetCalendarEventWidget instances as needed
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                showAddEventForm(context);
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Add Event', style: TextStyle(fontSize: 22, color: Colors.black)),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all(16.0),
+                backgroundColor: Colors.grey[300],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                minimumSize: const Size(double.infinity, 50),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
         ],
       ),
       bottomNavigationBar: VetBottomBar(
@@ -139,4 +131,108 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
       ),
     );
   }
+}
+
+void showAddEventForm(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Add padding around the form
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 30),
+              const Text('New Event', style: TextStyle(fontSize: 20)),
+              const SizedBox(height: 40),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 216, 216, 216),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 30),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Event Name',
+                        ),
+                        maxLines: null,
+                      ),
+                      SizedBox(height: 20),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Event Description',
+                        ),
+                        maxLines: null,
+                      ),
+                      SizedBox(height: 30),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 216, 216, 216),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Starts: ', style: TextStyle(fontSize: 20)),
+                          TimePickerWidget(),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Ends: ', style: TextStyle(fontSize: 20)),
+                          TimePickerWidget(),
+                        ],
+                      ),
+                      SizedBox(height: 30),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Save'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
