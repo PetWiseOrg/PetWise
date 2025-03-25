@@ -61,7 +61,7 @@ class PetWise extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: router,
-      theme: petwiseTheme,
+      // theme: petwiseTheme,
     );
   }
 }

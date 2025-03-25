@@ -25,22 +25,25 @@ class _CalendarState extends State<Calendar> {
   Widget? calendarView;
   Widget? buttonRow;
   DateTime selectedDate = DateTime.now();
+  Function(DateTime)? onDateClick;
 
   @override
   void initState() {
     super.initState();
+    onDateClick = dayView;
     monthView(selectedDate);
   }
 
   void dayView(DateTime date) {
-    selectedDate = date;
     setState(() {
+      selectedDate = date;
+      onDateClick = dayView;
       calendarView = DayView(
         controller: controller,
         initialDay: selectedDate,
-        headerStyle: headerStyle,
+        // headerStyle: headerStyle,
         onPageChange: (date, page) => selectedDate = date,
-        dateStringBuilder: (date, {secondaryDate}) => DateFormat.yMMMMd().format(date),
+        dateStringBuilder: (date, {secondaryDate}) => '${DateFormat.yMMMMd().format(date)}\n${DateFormat.EEEE().format(date)}',
       );
       buttonRow = Row(
         children: [
@@ -55,22 +58,16 @@ class _CalendarState extends State<Calendar> {
   }
 
   void weekView(DateTime date) {
-    selectedDate = date;
     setState(() {
+      selectedDate = date;
+      onDateClick = weekView;
       calendarView = WeekView(
         controller: controller,
         initialDay: selectedDate,
         startDay: WeekDays.sunday,
         onPageChange: (date, page) => selectedDate = date,
-        headerStyle: headerStyle,
+        // headerStyle: headerStyle,
         headerStringBuilder: (date, {secondaryDate}) => '${DateFormat.MMMMd().format(date)} - ${DateFormat.yMMMMd().format(secondaryDate!)}',
-        hourIndicatorSettings: const HourIndicatorSettings(
-          color: Colors.blueGrey,
-        ),
-        timeLineBuilder: (date) => DefaultTimeLineMark(
-          date: date,
-          markingStyle: const TextStyle(color: Colors.blueGrey),
-        ),
       );
       buttonRow = Row(
         children: [
@@ -85,34 +82,22 @@ class _CalendarState extends State<Calendar> {
   }
 
   void monthView(DateTime date) {
-    selectedDate = date;
     setState(() {
+      selectedDate = date;
       calendarView = MonthView(
         controller: controller,
-        // cellBuilder: (
-        //   date,
-        //   events,
-        //   isToday,
-        //   isInMonth,
-        //   hideDaysNotInMonth,
-        // ) {
-        //   // Return your widget to display as month cell.
-        //   return Container();
-        // },
         initialMonth: selectedDate,
         cellAspectRatio: 1,
         onPageChange: (date, pageIndex) => selectedDate = date,
-        onCellTap: (events, date) => dayView(date),
-        startDay: WeekDays.sunday, // To change the first day of the week.
-        // This callback will only work if cellBuilder is null.
+        onCellTap: (events, date) => onDateClick!(date),
+        onDateLongPress: (date) => print(date),
         onEventTap: (event, date) => print(event),
         onEventDoubleTap: (events, date) => print(events),
         onEventLongTap: (event, date) => print(event),
-        onDateLongPress: (date) => print(date),
         showWeekTileBorder: false, // To hide header border
         hideDaysNotInMonth: true, // To hide days or cell that are not in current month
         useAvailableVerticalSpace: true,
-        headerStyle: headerStyle,
+        // headerStyle: headerStyle,
         headerStringBuilder: (date, {secondaryDate}) => DateFormat.yMMMM().format(date),
       );
       buttonRow = Row(
@@ -134,21 +119,6 @@ class _CalendarState extends State<Calendar> {
       ),
       body: Column(
         children: [
-          //   const Text('Debug Buttons:'),
-          //   Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          //     ElevatedButton(
-          //       onPressed: () => monthView(DateTime.now()),
-          //       child: const Text('Month View'),
-          //     ),
-          //     ElevatedButton(
-          //       onPressed: () => weekView(DateTime.now()),
-          //       child: const Text('Week View'),
-          //     ),
-          //     ElevatedButton(
-          //       onPressed: () => dayView(DateTime.now()),
-          //       child: const Text('Day View'),
-          //     ),
-          //   ]),
           buttonRow!,
           Expanded(
             child: calendarView!,
