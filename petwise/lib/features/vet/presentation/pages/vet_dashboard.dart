@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:petwise/features/vet/presentation/widgets/vet_bottom_bar_widget.dart';
 import 'package:petwise/features/vet/presentation/widgets/vet_calendar_event_widget.dart';
-import 'package:go_router/go_router.dart';
-import 'package:petwise/navigation/routing.dart';
-import 'package:petwise/ui/common_widgets/pickers/time_picker_widget.dart';
+import 'package:petwise/features/vet/presentation/widgets/event_start_and_end_times_widget.dart';
+import 'package:petwise/features/vet/presentation/widgets/appointment_requests_widget.dart';
 
 class VetDashboardPage extends StatefulWidget {
   const VetDashboardPage({super.key});
@@ -54,6 +53,30 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
       ),
       body: Column(
         children: [
+          //    const AppointmentRequestsWidget(),
+          const SizedBox(height: 20),
+          const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Appointment Requests',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 5), // Space between text and line
+                    const Divider(
+                      color: Color.fromARGB(255, 217, 217, 217), // Faint line color
+                      thickness: 1,
+                      indent: 10,
+                      endIndent: 10,
+                    ),
+                  ],
+                ),
+              )),
+          const AppointmentRequestsWidget(),
           const SizedBox(height: 20),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -62,6 +85,7 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                   SizedBox(height: 20),
                   Text(
                     'Upcoming Appointments',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
@@ -104,24 +128,24 @@ class _VetDashboardPageState extends State<VetDashboardPage> {
             ),
           ),
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: ElevatedButton.icon(
-              onPressed: () {
-                showAddEventForm(context);
-              },
-              icon: const Icon(Icons.add),
-              label: const Text('Add Event', style: TextStyle(fontSize: 22, color: Colors.black)),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16.0),
-                backgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                ),
-                minimumSize: const Size(double.infinity, 50),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          //   child: ElevatedButton.icon(
+          //     onPressed: () {
+          //       showAddEventForm(context);
+          //     },
+          //     icon: const Icon(Icons.add),
+          //     label: const Text('Add Event', style: TextStyle(fontSize: 22, color: Colors.black)),
+          //     style: ElevatedButton.styleFrom(
+          //       padding: const EdgeInsets.all(16.0),
+          //       backgroundColor: Colors.grey[300],
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(0),
+          //       ),
+          //       minimumSize: const Size(double.infinity, 50),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(height: 20),
         ],
       ),
@@ -188,27 +212,7 @@ void showAddEventForm(BuildContext context) {
                 ),
                 child: const Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Starts: ', style: TextStyle(fontSize: 20)),
-                          TimePickerWidget(),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Ends: ', style: TextStyle(fontSize: 20)),
-                          TimePickerWidget(),
-                        ],
-                      ),
-                      SizedBox(height: 30),
-                    ],
-                  ),
+                  child: EventStartAndEndTimesWidget(),
                 ),
               ),
               const SizedBox(height: 40),

@@ -3,19 +3,27 @@ import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:intl/intl.dart';
 
 class TimePickerWidget extends StatefulWidget {
-  const TimePickerWidget({super.key});
+  final DateTime? initialDateTime;
+
+  const TimePickerWidget({super.key, this.initialDateTime});
 
   @override
   _TimePickerWidgetState createState() => _TimePickerWidgetState();
 }
 
 class _TimePickerWidgetState extends State<TimePickerWidget> {
-  DateTime? _selectedDateTime = nearestHalf(DateTime.now());
+  DateTime? _selectedDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDateTime = widget.initialDateTime ?? nearestHalf(DateTime.now());
+  }
 
   Future<void> _selectDateTime(BuildContext context) async {
     final DateTime? newDateTime = await showOmniDateTimePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDateTime!,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
       is24HourMode: false,
@@ -57,25 +65,38 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
             backgroundColor: const Color.fromARGB(255, 195, 195, 195),
           ),
           onPressed: () => _selectDateTime(context),
-          child: Text(
-            formatDate(_selectedDateTime!), // Corrected this part
-            style: const TextStyle(fontSize: 16, color: Colors.black),
-          ),
+          child: buildDateTimeText(_selectedDateTime!),
         ),
-
       ],
     );
   }
 }
 
 DateTime nearestHalf(DateTime val) {
-  int newMinute = (val.minute <= 30) ? 30 : 0; 
-  int newHour = (newMinute == 0) ? val.hour + 1 : val.hour; 
+  int newMinute = (val.minute <= 30) ? 30 : 0;
+  int newHour = (newMinute == 0) ? val.hour + 1 : val.hour;
 
   return DateTime(val.year, val.month, val.day, newHour, newMinute);
 }
 
-
 String formatDate(DateTime date) {
-  return DateFormat('MMMM d, y h:mm a').format(date); // Fixed extra space in 'h mm a'
+  return DateFormat('MMMM d, y h:mm a').format(date);
+}
+
+Widget buildDateTimeText(DateTime dateTime) {
+  if (dateTime.isBefore(DateTime.now())) {
+    return Text(
+      formatDate(dateTime),
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.red,
+        decoration: TextDecoration.lineThrough,
+        decorationColor: Colors.red,
+      ),
+    );
+  }
+  return Text(
+    formatDate(dateTime),
+    style: const TextStyle(fontSize: 16, color: Colors.black),
+  );
 }
