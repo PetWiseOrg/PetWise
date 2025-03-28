@@ -10,67 +10,132 @@ import 'package:petwise/navigation/routing.dart';
 import 'package:petwise/ui/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
-class PetOwnerDashboardPage extends StatelessWidget {
+class PetOwnerDashboardPage extends StatefulWidget {
   const PetOwnerDashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var petUserProvider= Provider.of<PetUserProvider>(context, listen: false);
-    var userProvider = Provider.of<UserProvider>(context, listen: false);
-    // Fetch the current pet user and user from their respective providers
-    // This ensures that the data is available for the ProfileHeader widget
-    // and other parts of the dashboard page.
-    userProvider.refreshCurrentUser();
-    petUserProvider.loadPetUser(userProvider.currentUser!.id);
-    // if petUser is null, it means the user has not created a pet profile yet
-    // create an empty petUser on the db
-    if (petUserProvider.currentPetUser == null) {
-      petUserProvider.createPetUser({
-        'user': userProvider.currentUser!.id,
+  State<PetOwnerDashboardPage> createState() => _PetOwnerDashboardPageState();
+}
+
+class _PetOwnerDashboardPageState extends State<PetOwnerDashboardPage> {
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    // Load data when the widget is inserted into the tree
+    _loadDashboardData();
+  }
+
+  Future<void> _loadDashboardData() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final petUserProvider = Provider.of<PetUserProvider>(context, listen: false);
+      final petProvider = Provider.of<PetProvider>(context, listen: false);
+
+      // Refresh current user data
+      await userProvider.refreshCurrentUser();
+      final currentUser = userProvider.currentUser;
+
+      if (currentUser == null) {
+        setState(() {
+          _errorMessage = 'User not found. Please log in again.';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Try to get the existing pet user with more robust error handling
+      final petUser = await petUserProvider.ensurePetUserExists(currentUser.id);
+      if (petUser == null) {
+        print("Warning: Failed to ensure pet user exists");
+      } else {
+        print("Successfully loaded or created pet user: ${petUser.id}");
+      }
+
+      // Load pets data
+      await petProvider.loadPets(currentUser.id);
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error loading data: $e';
+      });
+      print("Dashboard error: $e");
+    } finally {
+      setState(() {
+        _isLoading = false;
       });
     }
+  }
 
-    final petUser = petUserProvider.currentPetUser;
-
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: secondary,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-            color: secondary,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 75,
-              ),
-              ProfileHeader(petUser: petUser, user: userProvider.currentUser),
-              const SizedBox(height: 50),
-              const SectionTitle(title: 'Upcoming Appointments'),
-              const Divider(),
-              const SizedBox(height: 100),
-              const SectionTitle(title: 'My Pets'),
-              const Divider(),
-              const SizedBox(height: 10),
-              PetsList(),
-              const SizedBox(
-                height: 10,
-              ),
-              const SectionTitle(title: 'Previous Appointments & Treatment Plans'),
-              const Divider(),
-              const SizedBox(
-                height: 100,
-              ),
-              const SectionTitle(title: 'Recent Chats'),
-              const Divider(),
-              const SizedBox(
-                height: 100,
-              ),
-            ],
-          ),
+      body: RefreshIndicator(
+        onRefresh: _loadDashboardData,
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _errorMessage != null
+                ? Center(child: Text(_errorMessage!))
+                : _buildDashboardContent(),
+      ),
+    );
+  }
+
+  Widget _buildDashboardContent() {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: secondary,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 75),
+            Consumer2<UserProvider, PetUserProvider>(
+              builder: (context, userProvider, petUserProvider, _) {
+                return ProfileHeader(
+                  petUser: petUserProvider.currentPetUser,
+                  user: userProvider.currentUser,
+                );
+              },
+            ),
+            const SizedBox(height: 50),
+            const SectionTitle(title: 'Upcoming Appointments'),
+            const Divider(),
+            const SizedBox(height: 100),
+            const SectionTitle(title: 'My Pets'),
+            const Divider(),
+            const SizedBox(height: 10),
+            Consumer<PetProvider>(
+              builder: (context, petProvider, _) {
+                return petProvider.pets.isEmpty
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text('No pets added yet. Add your first pet!'),
+                        ),
+                      )
+                    : PetsList(pets: petProvider.pets);
+              },
+            ),
+            const SizedBox(height: 10),
+            const SectionTitle(title: 'Previous Appointments & Treatment Plans'),
+            const Divider(),
+            const SizedBox(height: 100),
+            const SectionTitle(title: 'Recent Chats'),
+            const Divider(),
+            const SizedBox(height: 100),
+          ],
         ),
       ),
     );
@@ -85,6 +150,10 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      return const Center(child: Text('No user data available'));
+    }
+
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 35),
       child: Row(
@@ -94,12 +163,12 @@ class ProfileHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Hello,', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              if (user != null) Text(user!.firstName + " " + user!.lastName, style: const TextStyle(fontSize: 22)),
+              Text("${user!.firstName} ${user!.lastName}", style: const TextStyle(fontSize: 22)),
             ],
           ),
           GestureDetector(
             onTap: () {
-              context.pushNamed(AppRoute.petOwnerProfilePage.name, extra: petUser);
+              context.pushNamed(AppRoute.petOwnerProfilePage.name);
             },
             child: CircleAvatar(
               radius: 40,
@@ -127,22 +196,20 @@ class SectionTitle extends StatelessWidget {
 }
 
 class PetsList extends StatelessWidget {
-  const PetsList({super.key});
+  final List<Pet> pets;
+
+  const PetsList({super.key, required this.pets});
 
   @override
   Widget build(BuildContext context) {
-    final pets = Provider.of<PetProvider>(context, listen: false);
-
     return SizedBox(
       height: 100,
-      child: SingleChildScrollView(
+      child: ListView(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            ...pets.pets.map((pet) => PetAvatar(pet: pet)),
-            AddPetButton(),
-          ],
-        ),
+        children: [
+          ...pets.map((pet) => PetAvatar(pet: pet)),
+          const AddPetButton(),
+        ],
       ),
     );
   }
@@ -156,7 +223,7 @@ class PetAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed(AppRoute.editPetPage.name, extra: pet); // Navigate to pet details page
+        context.pushNamed(AppRoute.editPetPage.name, extra: pet);
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 16),
@@ -177,6 +244,8 @@ class PetAvatar extends StatelessWidget {
 }
 
 class AddPetButton extends StatelessWidget {
+  const AddPetButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -186,10 +255,10 @@ class AddPetButton extends StatelessWidget {
           extra: Pet(
             id: '',
             name: '',
-            age: -1,
-            weight: -1,
+            age: 0,
+            weight: 0,
             species: 'Dog',
-            breed: 'Labrador',
+            breed: 'Unknown',
             sex: 'Male',
             birthdate: DateTime.now(),
             color: 'Brown',
