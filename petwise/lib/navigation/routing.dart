@@ -11,8 +11,7 @@ import 'package:petwise/ui/ui_authentication/pages/no_connection_page.dart';
 import 'package:petwise/ui/ui_calendar/calendar.dart';
 import 'package:go_router/go_router.dart';
 
-enum AppRoute { welcomePage, loginPage, forgotPasswordPage, registrationPage, homePage, forgotPassword, passwordReset, verifyEmail, additionalInfo,
-  calendar, noConnection }
+enum AppRoute { welcomePage, loginPage, forgotPasswordPage, registrationPage, homePage, forgotPassword, passwordReset, verifyEmail, additionalInfo, calendar, noConnection }
 
 final router = GoRouter(
   initialLocation: '/calendar',

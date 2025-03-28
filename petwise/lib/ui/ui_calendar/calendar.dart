@@ -2,8 +2,6 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-var controller = EventController();
-
 var headerStyle = const HeaderStyle(
   decoration: BoxDecoration(
     color: Colors.blue,
@@ -22,6 +20,7 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
+  EventController controller = EventController();
   Widget? calendarView;
   Widget? buttonRow;
   DateTime selectedDate = DateTime.now();
@@ -145,15 +144,4 @@ class _CalendarState extends State<Calendar> {
       ),
     );
   }
-}
-
-final event = CalendarEventData(
-  title: "Event 1",
-  date: DateTime.now(),
-  startTime: DateTime.now(),
-  endTime: DateTime.now().add(const Duration(hours: 1)),
-);
-
-void a() {
-  controller.add(event);
 }
