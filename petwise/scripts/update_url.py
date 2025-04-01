@@ -4,6 +4,7 @@ import time
 
 # Determine log file path based on operating system
 log_file = r"C:\temp\cloudflared.log" if os.name == "nt" else "/tmp/cloudflared.log"
+encoding = 'utf-8' if os.name != "nt" else 'utf-16'
 
 def extract_url(content):
     content = content.lstrip('\ufeff').strip()
@@ -12,7 +13,7 @@ def extract_url(content):
 
 def get_current_url():
     try:
-        with open('.env.tmp', 'r') as f:
+        with open('.env.tmp', 'r', encoding='utf-8') as f:
             content = f.read()
             match = re.search(r'URL=(https://\S+?\.trycloudflare\.com)', content, re.IGNORECASE)
             return match.group(1) if match else None
@@ -27,7 +28,7 @@ max_attempts = 10
 while attempts < max_attempts and (not url or url == current_url):
     time.sleep(2)
     try:
-        with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
+        with open(log_file, 'r', encoding=encoding, errors='ignore') as f:
             log_content = f.read()
         url = extract_url(log_content)
         if url == current_url:
