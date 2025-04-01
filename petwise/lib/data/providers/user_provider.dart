@@ -40,7 +40,6 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('Error refreshing current user: $e');
-      rethrow;
     }
   }
 

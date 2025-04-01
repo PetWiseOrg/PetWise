@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:petwise/data/models/pet.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/forgot_password_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/password_reset_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/register/additional_info_page.dart';
@@ -8,9 +10,18 @@ import 'package:petwise/ui/ui_authentication/pages/login/login_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/register/registration_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/welcome_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/no_connection_page.dart';
+import 'package:petwise/ui/ui_authentication/pages/no_connection_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/pet_owner_dashboard_page.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/edit_owner_page.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/edit_pet_page.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/pet_owner_profile_page.dart';
 
-enum AppRoute { welcomePage, loginPage, forgotPasswordPage, registrationPage, homePage, forgotPassword, passwordReset, verifyEmail, additionalInfo, noConnection }
+enum AppRoute { welcomePage, loginPage, forgotPasswordPage, registrationPage, homePage, forgotPassword, passwordReset, verifyEmail, additionalInfo,
+  petOwnerDashboardPage,
+  petOwnerProfilePage,
+  editPetPage,
+  editOwnerPage, noConnection }
 
 final router = GoRouter(
   initialLocation: '/welcome',
@@ -114,6 +125,29 @@ final router = GoRouter(
       path: '/no_connection',
       name: AppRoute.noConnection.name,
       builder: (context, state) => const NoConnectionPage(),
+    ),
+    GoRoute(
+      path: '/petOwnerDashboardPage',
+      name: AppRoute.petOwnerDashboardPage.name,
+      builder: (context, state) => const PetOwnerDashboardPage(),
+    ),
+    GoRoute(
+      path: '/petOwnerProfilePage',
+      name: AppRoute.petOwnerProfilePage.name,
+      builder: (context, state) => const PetOwnerProfilePage(),
+    ),
+    GoRoute(
+      path: '/editPetPage',
+      name: AppRoute.editPetPage.name,
+      builder: (context, state) {
+        final pet = state.extra as Pet;
+        return EditPetPage(pet: pet,);
+      },
+    ),
+    GoRoute(
+      path: '/editOwnerPage',
+      name: AppRoute.editOwnerPage.name,
+      builder: (context, state) => EditOwnerPage(),
     ),
   ],
 );

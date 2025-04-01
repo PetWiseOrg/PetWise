@@ -25,11 +25,19 @@ class PetProvider extends ChangeNotifier {
   Future<void> loadPets(String userId) async {
     try {
       final petsJson = await _petRepo.getPetsByUser(userId);
-      _pets = petsJson.map((json) => Pet.fromJson(json)).toList();
+
+      if (petsJson.isEmpty) {
+        _pets = [];
+      } else {
+        _pets = petsJson.map((json) => Pet.fromJson(json)).toList();
+      }
+
       notifyListeners();
     } catch (e) {
       print('Error loading pets: $e');
-      rethrow;
+      // Set empty list instead of rethrowing to avoid crashes
+      _pets = [];
+      notifyListeners();
     }
   }
 

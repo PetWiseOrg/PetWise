@@ -18,9 +18,41 @@ class PetUserRepository {
     return record.toJson();
   }
 
-  Future<Map<String, dynamic>> getPetUser(String userId) async {
-    final record = await pb.collection('petUsers').getFirstListItem('user="$userId"');
-    return record.toJson();
+  Future<Map<String, dynamic>?> getPetUser(String userId) async {
+    try {
+      final result = await pb.collection('petUsers').getList(
+            page: 1,
+            perPage: 1,
+            filter: 'user = "$userId"',
+          );
+
+      if (result.items.isEmpty) {
+        print('No pet user found for userId: $userId');
+        return null;
+      }
+
+      return result.items.first.toJson();
+    } catch (e) {
+      print('Error in getPetUser for userId $userId: $e');
+      // Return null instead of rethrowing to allow for graceful handling
+      return null;
+    }
+  }
+
+  Future<bool> petUserExists(String userId) async {
+    try {
+      final result = await pb.collection('petUsers').getList(
+            page: 1,
+            perPage: 1,
+            filter: 'user = "$userId"',
+          );
+
+      final exists = result.items.isNotEmpty;
+      return exists;
+    } catch (e) {
+      print('Error checking if pet user exists for userId $userId: $e');
+      return false;
+    }
   }
 
   Future<Map<String, dynamic>> updatePetUser(String id, Map<String, dynamic> data) async {
