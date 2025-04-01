@@ -32,7 +32,7 @@ enum AppRoute {
 }
 
 final router = GoRouter(
-  initialLocation: '/vet_dashboard',
+  initialLocation: '/welcome',
   routes: [
     // Non-vet routes...
     GoRoute(
