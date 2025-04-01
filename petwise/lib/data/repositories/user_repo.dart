@@ -77,7 +77,18 @@ class UserRepository {
   }
 
   Future<bool> isUserAuthenticated() async {
-    return pb.authStore.isValid;
+    final valid = pb.authStore.isValid;
+    if (valid) {
+      try {
+        await pb.collection("users").authRefresh();
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    return false;
+
     //testing
     //return false;
   }

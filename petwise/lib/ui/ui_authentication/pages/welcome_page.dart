@@ -31,6 +31,11 @@ class WelcomePageState extends State<WelcomePage> {
         context.goNamed(AppRoute.noConnection.name);
         return;
       }
+      if (!hasConnection) {
+        if (!mounted) return;
+        context.goNamed(AppRoute.noConnection.name);
+        return;
+      }
 
       final hasValidCredentials = await checkStoredCredentials();
       if (hasValidCredentials) {
@@ -44,9 +49,18 @@ class WelcomePageState extends State<WelcomePage> {
           setState(() {
             _isCheckingCredentials = false;
           });
-          //redirect to home page
           if (!mounted) return;
-          context.goNamed(AppRoute.homePage.name);
+          //redirect to pet owner or vet user home page based on user type
+          final userType = authProvider.currentUser!.userType;
+          if (userType == 'petUser') {
+            context.goNamed(AppRoute.petOwnerDashboardPage.name);
+          } else if (userType == 'vetUser') {
+            //context.goNamed(AppRoute.vetDashboardPage.name);
+            context.goNamed(AppRoute.homePage.name); // Placeholder for vet dashboard, redirect to home for now
+          } else {
+            context.goNamed(AppRoute.homePage.name);
+          }
+
         } else {
           //redirect to additional info page
           setState(() {
