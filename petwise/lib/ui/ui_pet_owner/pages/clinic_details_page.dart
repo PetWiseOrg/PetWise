@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:petwise/navigation/routing.dart';
+import 'package:go_router/go_router.dart';
 
 class ClinicDetailsPage extends StatelessWidget {
   final String clinicName;
@@ -93,8 +95,15 @@ class ClinicDetailsPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Schedule button pressed!')),
+                  context.pushNamed(
+                    AppRoute.appointmentSummaryPage.name,
+                    extra: {
+                      'clinicName': clinicName,
+                      'rating': rating,
+                      'concernsSummary': 'TODO: JSON from the text messages made in the Chat',
+                      'appointmentDateTime': DateTime.now().add(const Duration(days: 2, hours: 3)),
+                      'address': address,
+                    },
                   );
                 },
                 style: ElevatedButton.styleFrom(
