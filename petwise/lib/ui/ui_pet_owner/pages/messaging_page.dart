@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:petwise/navigation/routing.dart';
+import 'package:go_router/go_router.dart';
 
 class MessagingPage extends StatefulWidget {
   const MessagingPage({super.key});
@@ -32,7 +34,7 @@ class _MessagingPageState extends State<MessagingPage> {
     Future.delayed(const Duration(milliseconds: 600), () {
       setState(() {
         messages.add({
-          'text': 'I\'m an AI. I love AI. I do AI things!',
+          'text': 'I\'m an AI. I do AI things! I love AI.',
           'isUser': false
         });
       });
@@ -42,12 +44,6 @@ class _MessagingPageState extends State<MessagingPage> {
         curve: Curves.easeOut,
       );
     });
-  }
-
-  void _onFindClinicPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Find a Clinic tapped!')),
-    );
   }
 
   @override
@@ -104,7 +100,9 @@ class _MessagingPageState extends State<MessagingPage> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _onFindClinicPressed,
+                onPressed: () {
+                  context.pushNamed(AppRoute.findClinicPage.name);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
                   foregroundColor: Colors.black,
