@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:petwise/data/models/pet.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/forgot_password_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/login/password_reset_page.dart';
@@ -10,8 +9,11 @@ import 'package:petwise/ui/ui_authentication/pages/login/login_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/register/registration_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/welcome_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/no_connection_page.dart';
-import 'package:petwise/ui/ui_authentication/pages/no_connection_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/appointment_summary_page.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/clinic_details_page.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/find_clinic_page.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/messaging_page.dart';
 import 'package:petwise/ui/ui_pet_owner/pages/pet_owner_dashboard_page.dart';
 import 'package:petwise/ui/ui_pet_owner/pages/edit_owner_page.dart';
 import 'package:petwise/ui/ui_pet_owner/pages/edit_pet_page.dart';
@@ -21,10 +23,11 @@ enum AppRoute { welcomePage, loginPage, forgotPasswordPage, registrationPage, ho
   petOwnerDashboardPage,
   petOwnerProfilePage,
   editPetPage,
+  messagingPage, findClinicPage, clinicDetailsPage, appointmentSummaryPage,
   editOwnerPage, noConnection }
 
 final router = GoRouter(
-  initialLocation: '/welcome',
+  initialLocation: '/messagingPage',
   routes: [
     GoRoute(
       path: '/welcome',
@@ -148,6 +151,45 @@ final router = GoRouter(
       path: '/editOwnerPage',
       name: AppRoute.editOwnerPage.name,
       builder: (context, state) => EditOwnerPage(),
+    ),
+    GoRoute(
+      path: '/messagingPage',
+      name: AppRoute.messagingPage.name,
+      builder: (context, state) => MessagingPage(),
+    ),
+    GoRoute(
+      path: '/findClinicPage',
+      name: AppRoute.findClinicPage.name,
+      builder: (context, state) => FindClinicPage(),
+    ),
+    GoRoute(
+      path: '/clinicDetailsPage',
+      name: AppRoute.clinicDetailsPage.name,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+
+        return ClinicDetailsPage(
+          clinicName: extra['clinicName'] ?? '',
+          rating: extra['rating'] ?? 0.0,
+          description: extra['description'] ?? '',
+          address: extra['address'] ?? '',
+        );
+      },
+    ),
+    GoRoute(
+      path: '/appointmentSummaryPage',
+      name: AppRoute.appointmentSummaryPage.name,      
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+
+        return AppointmentSummaryPage(
+          clinicName: extra['clinicName'] ?? '',
+          rating: extra['rating'] ?? 0.0,
+          concernsSummary: extra['concernsSummary'] ?? '',
+          appointmentDateTime: extra['appointmentDateTime'] ?? DateTime.now(),
+          address: extra['address'] ?? '',
+        );
+      },
     ),
   ],
 );
