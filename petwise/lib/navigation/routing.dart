@@ -10,6 +10,7 @@ import 'package:petwise/ui/ui_authentication/pages/register/registration_page.da
 import 'package:petwise/ui/ui_authentication/pages/welcome_page.dart';
 import 'package:petwise/ui/ui_authentication/pages/no_connection_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petwise/ui/ui_pet_owner/pages/appointment_date_time_page.dart';
 import 'package:petwise/ui/ui_pet_owner/pages/appointment_summary_page.dart';
 import 'package:petwise/ui/ui_pet_owner/pages/clinic_details_page.dart';
 import 'package:petwise/ui/ui_pet_owner/pages/find_clinic_page.dart';
@@ -23,7 +24,7 @@ enum AppRoute { welcomePage, loginPage, forgotPasswordPage, registrationPage, ho
   petOwnerDashboardPage,
   petOwnerProfilePage,
   editPetPage,
-  messagingPage, findClinicPage, clinicDetailsPage, appointmentSummaryPage,
+  messagingPage, findClinicPage, clinicDetailsPage, appointmentDateTimePage, appointmentSummaryPage,
   editOwnerPage, noConnection }
 
 final router = GoRouter(
@@ -188,6 +189,19 @@ final router = GoRouter(
           concernsSummary: extra['concernsSummary'] ?? '',
           appointmentDateTime: extra['appointmentDateTime'] ?? DateTime.now(),
           address: extra['address'] ?? '',
+        );
+      },
+    ),
+    GoRoute(
+      name: AppRoute.appointmentDateTimePage.name,
+      path: '/appointmentDateTime',
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        return AppointmentDateTimePage(
+          clinicName: data['clinicName'],
+          rating: data['rating'],
+          address: data['address'],
+          concernsSummary: data['concernsSummary'],
         );
       },
     ),

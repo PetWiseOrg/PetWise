@@ -96,13 +96,12 @@ class ClinicDetailsPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   context.pushNamed(
-                    AppRoute.appointmentSummaryPage.name,
+                    AppRoute.appointmentDateTimePage.name,
                     extra: {
                       'clinicName': clinicName,
                       'rating': rating,
-                      'concernsSummary': 'TODO: JSON from the text messages made in the Chat',
-                      'appointmentDateTime': DateTime.now().add(const Duration(days: 2, hours: 3)),
                       'address': address,
+                      'concernsSummary': 'TODO: JSON from chat summary',
                     },
                   );
                 },
