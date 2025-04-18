@@ -9,37 +9,38 @@ class FindClinicPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final favoriteClinics = [
       {
-        'name': 'Pawsitive Vets',
+        'name': 'Angell Animal Medical Center',
         'distance': 1.2,
-        'rating': 4.8,
-        'description': 'Compassionate care for your furry friends. Specializing in small pets and exotic animals.',
-        'address': '101 Pet Avenue, Pet City',
+        'rating': 4.9,
+        'description': 'A nonprofit veterinary hospital in Boston offering 24/7 emergency and specialty care.',
+        'address': '350 S Huntington Ave, Boston, MA 02130',
       },
       {
-        'name': 'Happy Tails Clinic',
+        'name': 'Schwarzman Animal Medical Center',
         'distance': 2.0,
-        'rating': 4.5,
-        'description': 'Friendly staff and top-notch veterinary services for all types of pets.',
-        'address': '500 Tail Waggers Rd, Pet City',
+        'rating': 4.8,
+        'description': 'The world’s largest nonprofit animal hospital, providing comprehensive care in NYC.',
+        'address': '510 E 62nd St, New York, NY 10065',
       },
     ];
 
     final nearbyClinics = [
       {
-        'name': 'Whisker Wellness Center',
+        'name': 'UC Davis Veterinary Medical Teaching Hospital',
         'distance': 0.5,
-        'rating': 4.2,
-        'description': 'Expert veterinary services with a personal touch. Emergency services available.',
-        'address': '12 Whisker Lane, Pet City',
+        'rating': 4.7,
+        'description': 'A leading veterinary teaching hospital offering advanced care and training.',
+        'address': '1 Garrod Dr, Davis, CA 95616',
       },
       {
-        'name': 'Tail Waggers Veterinary',
+        'name': 'BluePearl Pet Hospital – Tampa',
         'distance': 0.8,
         'rating': 4.6,
-        'description': 'Affordable wellness plans and dental care for dogs and cats.',
-        'address': '800 Bark Blvd, Pet City',
+        'description': 'A specialty and emergency pet hospital providing advanced veterinary services.',
+        'address': '3000 Busch Lake Blvd, Tampa, FL 33614',
       },
     ];
+
 
     nearbyClinics.sort((a, b) =>
       (a['distance'] as double).compareTo(b['distance'] as double));

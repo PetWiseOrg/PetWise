@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:petwise/data/models/pet_user.dart';
-import 'package:petwise/data/models/user.dart';
 import 'package:petwise/data/providers/pet_user_provider.dart';
 import 'package:petwise/data/providers/user_provider.dart';
 import 'package:provider/provider.dart';

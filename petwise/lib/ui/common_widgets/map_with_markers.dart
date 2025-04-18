@@ -23,26 +23,33 @@ class _MapWithMarkersState extends State<MapWithMarkers> {
     _loadLocations();
   }
 
-  Future<void> _loadLocations() async {
-    try {
-      final ownerLocations = await locationFromAddress(widget.ownerAddress);
-      final clinicLocations = await locationFromAddress(widget.clinicAddress);
+Future<void> _loadLocations() async {
+  try {
+    final ownerLocs = await locationFromAddress(widget.ownerAddress);
+    final clinicLocs = await locationFromAddress(widget.clinicAddress);
 
-      final ownerLatLng = LatLng(ownerLocations.first.latitude, ownerLocations.first.longitude);
-      final clinicLatLng = LatLng(clinicLocations.first.latitude, clinicLocations.first.longitude);
-
-      setState(() {
-        _markers.add(Marker(markerId: const MarkerId('owner'), position: ownerLatLng, infoWindow: const InfoWindow(title: "You")));
-        _markers.add(Marker(markerId: const MarkerId('clinic'), position: clinicLatLng, infoWindow: const InfoWindow(title: "Clinic")));
-        _center = LatLng(
-          (ownerLatLng.latitude + clinicLatLng.latitude) / 2,
-          (ownerLatLng.longitude + clinicLatLng.longitude) / 2,
-        );
-      });
-    } catch (e) {
-      print('Failed to load locations: $e');
+    if (ownerLocs.isEmpty || clinicLocs.isEmpty) {
+      throw Exception("Could not geocode one or both addresses");
     }
+
+    final ownerLatLng = LatLng(ownerLocs.first.latitude, ownerLocs.first.longitude);
+    final clinicLatLng = LatLng(clinicLocs.first.latitude, clinicLocs.first.longitude);
+
+    setState(() {
+      _markers.add(Marker(markerId: const MarkerId('owner'), position: ownerLatLng));
+      _markers.add(Marker(markerId: const MarkerId('clinic'), position: clinicLatLng));
+      _center = LatLng(
+        (ownerLatLng.latitude + clinicLatLng.latitude) / 2,
+        (ownerLatLng.longitude + clinicLatLng.longitude) / 2,
+      );
+    });
+  } catch (e) {
+    print("📍 Address geocoding failed: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Failed to load map due to invalid address.")),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
