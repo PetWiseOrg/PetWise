@@ -1,8 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:petwise/navigation/routing.dart';
-import 'package:go_router/go_router.dart';
+import 'dart:async';
 
-class ClinicDetailsPage extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:petwise/navigation/routing.dart';
+
+class ClinicDetailsPage extends StatefulWidget {
   final String clinicName;
   final double rating;
   final String description;
@@ -15,6 +19,55 @@ class ClinicDetailsPage extends StatelessWidget {
     required this.description,
     required this.address,
   });
+
+  @override
+  State<ClinicDetailsPage> createState() => _ClinicDetailsPageState();
+}
+
+class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
+  final Completer<GoogleMapController> _mapController = Completer();
+  Set<Marker> _markers = {};
+  LatLng _initialPosition = const LatLng(37.7749, -122.4194); // fallback
+
+  final String tempUserAddress = '2005 15th St, Troy 12180';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMapMarkers();
+  }
+
+  Future<void> _loadMapMarkers() async {
+    try {
+      final clinicLoc = await locationFromAddress(widget.address);
+      final userLoc = await locationFromAddress(tempUserAddress);
+
+      final clinicLatLng = LatLng(clinicLoc.first.latitude, clinicLoc.first.longitude);
+      final userLatLng = LatLng(userLoc.first.latitude, userLoc.first.longitude);
+
+      setState(() {
+        _initialPosition = LatLng(
+          (clinicLatLng.latitude + userLatLng.latitude) / 2,
+          (clinicLatLng.longitude + userLatLng.longitude) / 2,
+        );
+
+        _markers = {
+          Marker(
+            markerId: const MarkerId('clinic'),
+            position: clinicLatLng,
+            infoWindow: InfoWindow(title: widget.clinicName),
+          ),
+          Marker(
+            markerId: const MarkerId('user'),
+            position: userLatLng,
+            infoWindow: const InfoWindow(title: 'Your Address'),
+          ),
+        };
+      });
+    } catch (e) {
+      print('Error geocoding addresses: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,60 +85,44 @@ class ClinicDetailsPage extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                // Clinic Name
-                Text(
-                  clinicName,
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
+                Text(widget.clinicName,
+                    style: const TextStyle(
+                        fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black)),
                 const SizedBox(height: 12),
-
-                // Rating
                 Row(
                   children: [
-                    _buildStarRating(rating),
+                    _buildStarRating(widget.rating),
                     const SizedBox(width: 8),
-                    Text('$rating / 5',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        )),
+                    Text('${widget.rating} / 5', style: const TextStyle(fontSize: 16)),
                   ],
                 ),
                 const SizedBox(height: 20),
-
-                // Clinic Description
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                  ),
-                ),
+                Text(widget.description,
+                    style: const TextStyle(fontSize: 16, color: Colors.black87)),
                 const SizedBox(height: 30),
 
-                // Map Placeholder
-                Container(
+                // Map replaces placeholder
+                SizedBox(
                   height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Center(
-                    child: Icon(Icons.map, size: 80, color: Colors.black38),
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: _initialPosition,
+                        zoom: 12,
+                      ),
+                      markers: _markers,
+                      onMapCreated: (controller) => _mapController.complete(controller),
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
 
-                Text(
-                  address,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
+                Text(widget.address,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
           ),
@@ -96,12 +133,13 @@ class ClinicDetailsPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   context.pushNamed(
-                    AppRoute.appointmentDateTimePage.name,
+                    AppRoute.appointmentSummaryPage.name,
                     extra: {
-                      'clinicName': clinicName,
-                      'rating': rating,
-                      'address': address,
-                      'concernsSummary': 'TODO: JSON from chat summary',
+                      'clinicName': widget.clinicName,
+                      'rating': widget.rating,
+                      'concernsSummary': 'TODO: JSON from the text messages made in the Chat',
+                      'appointmentDateTime': DateTime.now().add(const Duration(days: 2, hours: 3)),
+                      'address': widget.address,
                     },
                   );
                 },
@@ -120,7 +158,6 @@ class ClinicDetailsPage extends StatelessWidget {
     );
   }
 
-  // Helper Widget to build the Star Rating Row
   Widget _buildStarRating(double rating) {
     List<Widget> stars = [];
     int fullStars = rating.floor();
